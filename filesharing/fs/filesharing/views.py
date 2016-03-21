@@ -15,7 +15,7 @@ class CompanyViewSet(viewsets.ModelViewSet):
 def resellers(request):
     resellers = Reseller.objects.all()
 
-    return render(request, 'ui/resellers.html', {'resellers': reseller})
+    return render(request, 'ui/resellers.html', {'resellers': resellers})
 
 def resellercreate(request):
     pass
