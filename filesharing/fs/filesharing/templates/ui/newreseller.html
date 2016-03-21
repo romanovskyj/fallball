@@ -6,8 +6,11 @@
     <form class="form-horizontal" method="POST" action="/reseller/new/">
         {% csrf_token %}
         <div class="box-body">
-                <label class="col-sm-4 control-label">Partner ID:</label>
-                <div class="col-sm-3"> {{ form.partnerid }}</div>
+            <label class="col-sm-4 control-label">Partner ID:</label>
+            <div class="col-sm-3"> {{ form.partnerid }}</div>
+        </div>
+        <div class="box-footer">
+            <button type="submit" value="Submit" class="btn btn-primary">Create</button>
         </div>
     </form>
 </div>
