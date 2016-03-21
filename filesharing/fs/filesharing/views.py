@@ -26,7 +26,7 @@ def resellers(request):
 
             for r_id in chosen_reseller_ids:
                 reseller = get_object_or_404(Reseller,pk=r_id)
-                reseller.delte()
+                reseller.delete()
 
     return render(request, 'ui/resellers.html', {'resellers': resellers})
 
