@@ -51,7 +51,7 @@ def resellerCreate(request):
 
     return render(request, 'ui/newreseller.html', {'form': form})
 
-def reseller(reques):
+def reseller(request):
     pass
 
 def addCompany(request):
