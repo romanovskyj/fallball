@@ -49,7 +49,7 @@ def resellerCreate(request):
 
     form = ResellerCreateForm()
 
-    return render(request, 'ui/resellers.html', {'form': form})
+    return render(request, 'ui/newreseller.html', {'form': form})
 
 def reseller(reques):
     pass
