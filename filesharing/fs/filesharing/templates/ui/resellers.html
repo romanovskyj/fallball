@@ -20,7 +20,7 @@
                 {% for reseller in resellers %}
                 <tr>
                     <th style="width: 10px">
-                        <input disabled id="id_mark_{{reseller.id}}" name="mark_{{reseller.id}}"
+                        <input id="id_mark_{{reseller.id}}" name="mark_{{reseller.id}}"
                                                    type="checkbox"/>
                     </th>
                     <th style="width: 120px">{{reseller.id}}</th>
@@ -33,7 +33,7 @@
         </div>
         <div style="padding: 15px">
             <input style="margin-left:5px" type="submit" value="Delete Selected"/>
-            <a href="/resellers/new" class="btn btn-primary">Create Sandbox</a>
+            <a href="/resellers/new" class="btn btn-primary">Create Reseller</a>
         </div>
     </form>
 </div>
