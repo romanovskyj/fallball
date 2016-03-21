@@ -51,8 +51,9 @@ def resellerCreate(request):
 
     return render(request, 'ui/newreseller.html', {'form': form})
 
-def reseller(request):
-    pass
+def reseller(request, reseller_id):
+    reseller = get_object_or_404(Reseller,pk = reseller_id)
+    return render(request, 'ui/reseller.html', {'reseller': reseller})
 
 def addCompany(request):
     pass
