@@ -8,6 +8,9 @@ class Reseller(models.Model):
     # Name of the company that will login as reseller
     partnerid = models.CharField(max_length=100)
 
+    def disk_usage(self):
+        pass
+
 class Company(models.Model):
 
     # reseller who owns the company
