@@ -45,7 +45,7 @@ def resellerCreate(request):
             reseller = Reseller(partnerid=form_data['partnerid'])
             reseller.save()
 
-        return redirect('/resellers')
+        return redirect('ui/resellers')
 
     form = ResellerCreateForm()
 
