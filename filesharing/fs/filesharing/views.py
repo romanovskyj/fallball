@@ -1,8 +1,8 @@
 from rest_framework import viewsets
 from filesharing.serializers import ResellerSerializer, CompanySerializer
 from filesharing.models import Reseller, Company
-from django.shortcuts import render, get_object_or_404
-from filesharing.forms import ResellerChangeForm
+from django.shortcuts import render, get_object_or_404, redirect
+from filesharing.forms import ResellerChangeForm, ResellerCreateForm
 from .auxiliary import marked_elements
 
 class ResellerViewSet(viewsets.ModelViewSet):
@@ -30,17 +30,35 @@ def resellers(request):
 
     return render(request, 'ui/resellers.html', {'resellers': resellers})
 
-def resellercreate(request):
-    pass
+def resellerCreate(request):
+
+    if request.method == 'POST':
+
+        # get data that user filled
+        collected_form = ResellerCreateForm(data=request.POST)
+
+        if collected_form.is_valid():
+
+            # get data from form
+            form_data = collected_form.cleaned_data
+
+            reseller = Reseller(partnerid=form_data['partnerid'])
+            reseller.save()
+
+        return redirect('/resellers')
+
+    form = ResellerCreateForm()
+
+    return render(request, 'ui/resellers.html', {'form': form})
 
 def reseller(reques):
     pass
 
-def addcompany(request):
+def addCompany(request):
     pass
 
-def deletecompany(request):
+def deleteCompany(request):
     pass
 
-def deletereseller(request):
+def deleteReseller(request):
     pass
