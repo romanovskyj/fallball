@@ -12,7 +12,7 @@ class Reseller(models.Model):
 
     def disk_usage(self):
         total = Company.objects.filter(resellerid = self).aggregate(Sum('diskusage'))
-        return total
+        return total['diskusage__sum']
 
     total = property(disk_usage)
 
