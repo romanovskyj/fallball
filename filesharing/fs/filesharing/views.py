@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from filesharing.serializers import ResellerSerializer, CompanySerializer
 from filesharing.models import Reseller, Company
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, get_list_or_404
 from filesharing.forms import ResellerChangeForm, ResellerCreateForm
 from .auxiliary import marked_elements
 
@@ -53,7 +53,8 @@ def resellerCreate(request):
 
 def reseller(request, reseller_id):
     reseller = get_object_or_404(Reseller,pk = reseller_id)
-    return render(request, 'ui/reseller.html', {'reseller': reseller})
+    companies = get_list_or_404(Company, resellerid = reseller)
+    return render(request, 'ui/reseller.html', {'reseller': reseller, 'companies': companies})
 
 def addCompany(request):
     pass
