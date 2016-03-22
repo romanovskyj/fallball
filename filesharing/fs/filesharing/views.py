@@ -33,7 +33,11 @@ def resellers(request):
         # to avoid deleted objects presentation
         resellers = Reseller.objects.all()
 
-    return render(request, 'ui/resellers.html', {'resellers': resellers})
+    resellers_total_usage = {}
+    for reseller in resellers:
+        resellers_total_usage[reseller.id] = reseller.disk_usage()
+
+    return render(request, 'ui/resellers.html', {'resellers': resellers, 'reseller_total_usage': resellers_total_usage})
 
 
 def resellerCreate(request):

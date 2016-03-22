@@ -1,5 +1,7 @@
 from django.db import models
 from random import randint
+from django.shortcuts import get_list_or_404
+from django.db.models import Sum
 
 # Create your models here.
 
@@ -9,7 +11,8 @@ class Reseller(models.Model):
     partnerid = models.CharField(max_length=100)
 
     def disk_usage(self):
-        pass
+        total = Company.objects.filter(resellerid = self).aggregate(Sum('diskusage'))
+        return total
 
 class Company(models.Model):
 
