@@ -31,3 +31,4 @@ class CompanyCreateForm(forms.Form):
         self.fields['resellerId'] = forms.CharField(widget=forms.HiddenInput(attrs={'value':resellerId}))
 
     companyname = forms.CharField()
+    admin = forms.CharField()
