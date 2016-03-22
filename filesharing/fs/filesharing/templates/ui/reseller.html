@@ -4,7 +4,7 @@
 <div class="box-header">
     <h1>{{ reseller.partnerid }}</h1>
 </div>
-{% if company %}
+{% if companies %}
 <div class="box" style="width: 800px">
     <form method="POST" action="/ui/resellers/{{reseller.id}}/" role="form">
         {% csrf_token %}
