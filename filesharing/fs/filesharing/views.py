@@ -62,7 +62,7 @@ def resellerCreate(request):
 
 def reseller(request, reseller_id):
     reseller = get_object_or_404(Reseller, pk=reseller_id)
-    companies = get_list_or_404(Company, resellerid=reseller)
+    companies = Company.objects.filter(resellerid=reseller)
 
     if request.method == 'POST':
         collected_form = CompanyChangeForm(data=request.POST, companies=companies)
