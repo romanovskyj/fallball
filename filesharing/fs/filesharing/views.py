@@ -86,7 +86,8 @@ def companyCreate(request, reseller_id):
             # get data from form
             form_data = collected_form.cleaned_data
 
-            company = Company(companyname=form_data['companyname'], resellerid = form_data['resellerId'])
+            reseller = get_object_or_404(Reseller,pk=reseller_id)
+            company = Company(companyname=form_data['companyname'], resellerid = reseller)
             company.save()
 
         return redirect('/ui/resellers/' + reseller_id + '/')
