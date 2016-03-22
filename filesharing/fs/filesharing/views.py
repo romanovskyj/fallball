@@ -90,7 +90,7 @@ def companyCreate(request, reseller_id):
             company = Company(companyname=form_data['companyname'], resellerid = form_data['resellerId'])
             company.save()
 
-        return redirect('/ui/reseller/' + reseller_id + '/')
+        return redirect('/ui/resellers/' + reseller_id + '/')
 
 
     form = CompanyCreateForm(resellerId = reseller_id)
