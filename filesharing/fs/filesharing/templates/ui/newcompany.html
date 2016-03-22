@@ -5,6 +5,7 @@
 <div class="box" style="width:500px">
     <form class="form-horizontal" method="POST" action="/ui/resellers/{{resellerId}}/new/">
         {% csrf_token %}
+        {{ form.resellerId }}
         <div class="box-body">
             <label class="col-sm-4 control-label">Company Name:</label>
             <div class="col-sm-3"> {{ form.companyname }}</div>
