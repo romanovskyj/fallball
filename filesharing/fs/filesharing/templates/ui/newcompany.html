@@ -3,7 +3,7 @@
 {% block content %}
 <h1>Create New Company</h1>
 <div class="box" style="width:500px">
-    <form class="form-horizontal" method="POST" action="/ui/reseller/{{reseller_id}}/new/">
+    <form class="form-horizontal" method="POST" action="/ui/resellers/{{resellerId}}/new/">
         {% csrf_token %}
         <div class="box-body">
             <label class="col-sm-4 control-label">Company Name:</label>
