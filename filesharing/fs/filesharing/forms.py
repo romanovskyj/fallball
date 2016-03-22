@@ -22,3 +22,12 @@ class ResellerCreateForm(forms.Form):
         super().__init__(*args, **kwargs)
 
     partnerid = forms.CharField()
+
+
+class CompanyCreateForm(forms.Form):
+
+    def __init__(self, resellerId, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['resellerId'] = forms.CharField(widget=forms.HiddenInput(attrs={'value':resellerId}))
+
+    companyname = forms.CharField()
