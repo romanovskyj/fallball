@@ -9,6 +9,13 @@ class ResellerChangeForm(forms.Form):
         for reseller in resellers:
             self.fields['mark_%d' % reseller.id] = forms.BooleanField(required=False)
 
+class CompanyChangeForm(forms.Form):
+
+    def __init__(self, companies, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for company in companies:
+            self.fields['mark_%d' % company.id] = forms.BooleanField(required=False)
+
 class ResellerCreateForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
