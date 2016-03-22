@@ -79,8 +79,6 @@ def reseller(request, reseller_id):
 
 def companyCreate(request, reseller_id):
     if request.method == 'POST':
-        import pdb
-        pdb.set_trace()
         # get data that user filled
         collected_form = CompanyCreateForm(data=request.POST,resellerId = reseller_id)
 
