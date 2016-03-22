@@ -14,6 +14,8 @@ class Reseller(models.Model):
         total = Company.objects.filter(resellerid = self).aggregate(Sum('diskusage'))
         return total
 
+    total = property(disk_usage)
+
 class Company(models.Model):
 
     # reseller who owns the company
