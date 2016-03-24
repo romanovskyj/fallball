@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1>Create New Company</h1>
-<div class="box" style="width:400px">
+<div class="box" style="width:302px">
     <form class="form-horizontal" method="POST" action="/ui/resellers/{{resellerId}}/new/">
         {% csrf_token %}
         {{ form.resellerId }}
@@ -16,8 +16,8 @@
                 <div class="col-sm-3"> {{ form.admin }}</div>
             </div>
         </div>
-        <div class="box-footer" align="left">
-            <button type="submit" value="Submit" class="btn btn-primary">Create</button>
+        <div class="box-footer" >
+            <button align="left" type="submit" value="Submit" class="btn btn-primary">Create</button>
         </div>
     </form>
 </div>
