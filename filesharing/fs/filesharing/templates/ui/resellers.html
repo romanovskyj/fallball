@@ -4,7 +4,7 @@
 <div class="box-header">
     <h1>Available Resellers</h1>
 </div>
-<div class="box" style="width: 800px">
+<div class="box" style="width: 500px">
     <form method="POST" action="/ui/resellers/" role="form">
         {% csrf_token %}
         <div class="box-body">
@@ -28,8 +28,8 @@
                 </tbody>
             </table>
         </div>
-        <div style="padding: 15px">
-            <input style="margin-left:5px" type="submit" value="Delete Selected"/>
+        <div style="padding: 15px; text-align: right;">
+            <input style="margin-left:5px" type="submit" class="btn btn-primary" value="Delete Selected"/>
             <a href="/ui/resellers/new" class="btn btn-primary">Create Reseller</a>
         </div>
     </form>
