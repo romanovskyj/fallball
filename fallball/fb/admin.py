@@ -1,3 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Client, Reseller, User
+
+fb_models = (Client, Reseller, User)
+admin.site.register(fb_models)
