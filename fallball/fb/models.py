@@ -1,14 +1,19 @@
 from django.db import models
-
+from django.db.models import Sum
 
 class Reseller(models.Model):
 
     def __str__(self):
-        return self.name
+        return self.instance_id
+
+    def get_clients_amount(self):
+        return Client.objects.count()
+
 
     def get_usage(self):
         total = Client.objects.filter(reseller = self).aggregate(Sum('usage'))
         return total['usage__sum']
+
 
     instance_id = models.CharField(max_length=120)
     limit = models.IntegerField()
