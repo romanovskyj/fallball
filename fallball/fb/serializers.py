@@ -20,7 +20,10 @@ class ResellerSerializer(rest_serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Reseller
-        fields = ('instance_id', 'clients_amount', 'storage')
+        fields = ('id', 'clients_amount', 'storage')
+
+    def create(self, validated_data):
+        return Reseller.objects.create(**validated_data)
 
     def get_clients_amount(self, obj):
         return obj.get_clients_amount()
@@ -43,7 +46,7 @@ class ClientSerializer(rest_serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Client
-        fields = ('instance_id', 'creation_date', 'users_amount', 'storage')
+        fields = ('id', 'creation_date', 'users_amount', 'storage')
 
     def get_users_amount(self, obj):
         return obj.get_users_amount()
@@ -61,7 +64,7 @@ class UserSerializer(rest_serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = User
-        fields = ('instance_id', 'password','role', 'storage')
+        fields = ('id', 'password','role', 'storage')
 
     def get_role(self, obj):
         if obj.admin is True:
