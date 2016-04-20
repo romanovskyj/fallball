@@ -64,7 +64,7 @@ class UserSerializer(rest_serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'password','role', 'storage')
+        fields = ('id', 'password', 'role', 'storage')
 
     def get_role(self, obj):
         if obj.admin is True:

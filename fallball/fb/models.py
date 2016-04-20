@@ -3,7 +3,7 @@ from django.db.models import Sum
 
 
 class Reseller(models.Model):
-    id = models.CharField(max_length=120,primary_key=True)
+    id = models.CharField(max_length=120, primary_key=True)
     limit = models.IntegerField()
     token = models.CharField(max_length=100)
 

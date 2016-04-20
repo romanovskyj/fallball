@@ -7,7 +7,8 @@ from .serializers import ClientSerializer, ResellerSerializer, UserSerializer
 
 
 class ResellerViewSet(viewsets.ModelViewSet):
-    # To get list of resellers or create new reseller admin token should be specified
+    # To get list of resellers or create new reseller
+    # admin token should be specified
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
     queryset = Reseller.objects.all().order_by('-id')
