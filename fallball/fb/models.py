@@ -5,10 +5,10 @@ from django.db.models import Sum
 class Reseller(models.Model):
     id = models.CharField(max_length=120, primary_key=True)
     limit = models.IntegerField()
-    token = models.CharField(max_length=100)
+    token = models.CharField(max_length=20)
 
     def __str__(self):
-        return self.instance_id
+        return self.id
 
     def get_clients_amount(self):
         """
@@ -37,7 +37,7 @@ class Client(models.Model):
     reseller = models.ForeignKey(Reseller)
 
     def __str__(self):
-        return self.instance_id
+        return self.id
 
     def get_usage(self):
         """
@@ -66,4 +66,4 @@ class User(models.Model):
     company = models.ForeignKey(Client)
 
     def __str__(self):
-        return self.instance_id
+        return self.id

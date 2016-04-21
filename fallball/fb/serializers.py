@@ -1,6 +1,8 @@
+from datetime import datetime
+
 from rest_framework import serializers as rest_serializers
 
-from .models import Client, Reseller, User
+from .models import Client, Reseller, User, ResellerUser
 
 
 class StorageResellerSerializer(rest_serializers.HyperlinkedModelSerializer):
@@ -71,3 +73,15 @@ class UserSerializer(rest_serializers.HyperlinkedModelSerializer):
             return "admin"
         else:
             return "user"
+
+
+class StorageResellerUserSerializer(rest_serializers.HyperlinkedModelSerializer):
+    usage = rest_serializers.SerializerMethodField()
+
+    class Meta:
+        model = ResellerUser
+        fields = ('usage', 'limit')
+
+    def get_usage(self, obj):
+        return obj.get_usage()
+
