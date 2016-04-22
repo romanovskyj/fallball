@@ -1,14 +1,15 @@
+from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Sum
-
+from rest_framework.authtoken.models import Token
 
 class Reseller(models.Model):
     id = models.CharField(max_length=120, primary_key=True)
     limit = models.IntegerField()
-    token = models.CharField(max_length=20)
+    owner = models.OneToOneField(User)
 
     def __str__(self):
-        return self.id
+        return 'Reseller {id}'.format(id=self.id)
 
     def get_clients_amount(self):
         """
@@ -37,13 +38,13 @@ class Client(models.Model):
     reseller = models.ForeignKey(Reseller)
 
     def __str__(self):
-        return self.id
+        return 'Client {id}'.format(id=self.id)
 
     def get_usage(self):
         """
         Calculate total usage amount for particular reseller
         """
-        total = User.objects.filter(company=self).aggregate(Sum('usage'))
+        total = ClientUser.objects.filter(company=self).aggregate(Sum('usage'))
         if total['usage__sum'] is not None:
             return total['usage__sum']
         else:
@@ -53,10 +54,10 @@ class Client(models.Model):
         """
         Calculate users amount for particular company
         """
-        return User.objects.filter(company=self).count()
+        return ClientUser.objects.filter(company=self).count()
 
 
-class User(models.Model):
+class ClientUser(models.Model):
     # email field contains user email and used as user id
     id = models.EmailField(primary_key=True)
     password = models.CharField(max_length=12)
@@ -66,4 +67,4 @@ class User(models.Model):
     company = models.ForeignKey(Client)
 
     def __str__(self):
-        return self.id
+        return 'ClientUser {id}'.format(id=self.id)
