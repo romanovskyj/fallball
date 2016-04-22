@@ -1,8 +1,7 @@
-from datetime import datetime
-
 from rest_framework import serializers as rest_serializers
+from rest_framework.authtoken.models import Token
 
-from .models import Client, Reseller, User, ResellerUser
+from .models import Client, Reseller, ClientUser
 
 
 class StorageResellerSerializer(rest_serializers.HyperlinkedModelSerializer):
@@ -19,16 +18,23 @@ class StorageResellerSerializer(rest_serializers.HyperlinkedModelSerializer):
 class ResellerSerializer(rest_serializers.HyperlinkedModelSerializer):
     storage = StorageResellerSerializer(source='*')
     clients_amount = rest_serializers.SerializerMethodField()
+    token = rest_serializers.SerializerMethodField()
 
     class Meta:
         model = Reseller
-        fields = ('id', 'clients_amount', 'storage')
+        fields = ('id','token', 'clients_amount', 'storage')
 
     def create(self, validated_data):
+        import pdb
+        pdb.set_trace()
         return Reseller.objects.create(**validated_data)
 
     def get_clients_amount(self, obj):
         return obj.get_clients_amount()
+
+    def get_token(self,obj):
+        token = Token.objects.filter(user=obj.owner)
+        return token[0].key
 
 
 class StorageClientSerializer(rest_serializers.HyperlinkedModelSerializer):
@@ -54,18 +60,18 @@ class ClientSerializer(rest_serializers.HyperlinkedModelSerializer):
         return obj.get_users_amount()
 
 
-class StorageUserSerializer(rest_serializers.HyperlinkedModelSerializer):
+class StorageClientUserSerializer(rest_serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = User
+        model = ClientUser
         fields = ('usage', 'limit')
 
 
-class UserSerializer(rest_serializers.HyperlinkedModelSerializer):
+class ClientUserSerializer(rest_serializers.HyperlinkedModelSerializer):
     role = rest_serializers.SerializerMethodField()
-    storage = StorageUserSerializer(source='*')
+    storage = StorageClientUserSerializer(source='*')
 
     class Meta:
-        model = User
+        model = ClientUser
         fields = ('id', 'password', 'role', 'storage')
 
     def get_role(self, obj):
@@ -73,15 +79,4 @@ class UserSerializer(rest_serializers.HyperlinkedModelSerializer):
             return "admin"
         else:
             return "user"
-
-
-class StorageResellerUserSerializer(rest_serializers.HyperlinkedModelSerializer):
-    usage = rest_serializers.SerializerMethodField()
-
-    class Meta:
-        model = ResellerUser
-        fields = ('usage', 'limit')
-
-    def get_usage(self, obj):
-        return obj.get_usage()
 
