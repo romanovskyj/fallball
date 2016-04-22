@@ -1,5 +1,8 @@
+from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers as rest_serializers
 from rest_framework.authtoken.models import Token
+from rest_framework.exceptions import ValidationError
 
 from .models import Client, Reseller, ClientUser
 
@@ -25,9 +28,13 @@ class ResellerSerializer(rest_serializers.HyperlinkedModelSerializer):
         fields = ('id','token', 'clients_amount', 'storage')
 
     def create(self, validated_data):
-        import pdb
-        pdb.set_trace()
-        return Reseller.objects.create(**validated_data)
+        if not get_object_or_404(User, username=validated_data['id']):
+            user = User(username=validated_data['id'])
+            user.save()
+            Token.objects.create(user=user)
+            return Reseller.objects.create(owner=user, **validated_data)
+        else:
+            raise ValidationError('Reseller with such id is already created')
 
     def get_clients_amount(self, obj):
         return obj.get_clients_amount()

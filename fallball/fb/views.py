@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from django.contrib.auth.models import User
 from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
@@ -22,18 +21,6 @@ class ResellerViewSet(viewsets.ModelViewSet):
     serializer_class = ResellerSerializer
     queryset = Reseller.objects.all()
 
-    def create(self, request):
-        user = User(username=request.data['id'])
-        user.save()
-        Token.objects.create(user=user)
-        import pdb
-        pdb.set_trace()
-        request.data['owner'] = user
-        serializer = ResellerSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ClientViewSet(viewsets.ModelViewSet):
