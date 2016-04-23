@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
@@ -26,9 +27,18 @@ class ResellerViewSet(viewsets.ModelViewSet):
 class ClientViewSet(viewsets.ModelViewSet):
     queryset = Client.objects.all().order_by('-id')
     serializer_class = ClientSerializer
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def list(self, request):
+        reseller = get_object_or_404(Reseller,owner=request.user)
+        queryset = Client.objects.filter(reseller=reseller)
+        serializer = ClientSerializer(queryset, many=True)
+        return Response(serializer.data)
 
     def create(self, request):
         request.data['creation_date'] = datetime.now()
+        request.data['reseller'] = get_object_or_404(Reseller,owner=request.user)
         serializer = ClientSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()

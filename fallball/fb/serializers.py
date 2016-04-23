@@ -28,7 +28,7 @@ class ResellerSerializer(rest_serializers.HyperlinkedModelSerializer):
         fields = ('id','token', 'clients_amount', 'storage')
 
     def create(self, validated_data):
-        if not get_object_or_404(User, username=validated_data['id']):
+        if not User.objects.filter(username=validated_data['id']):
             user = User(username=validated_data['id'])
             user.save()
             Token.objects.create(user=user)
@@ -62,6 +62,11 @@ class ClientSerializer(rest_serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Client
         fields = ('id', 'creation_date', 'users_amount', 'storage')
+
+    def create(self, validated_data):
+        #import pdb
+        #pdb.set_trace()
+        return Client.objects.create(reseller=self.initial_data['reseller'], **validated_data)
 
     def get_users_amount(self, obj):
         return obj.get_users_amount()
