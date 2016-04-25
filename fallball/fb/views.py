@@ -40,6 +40,7 @@ class ClientViewSet(viewsets.ModelViewSet):
         request.data['creation_date'] = datetime.now()
         request.data['reseller'] = get_object_or_404(Reseller,owner=request.user)
         serializer = ClientSerializer(data=request.data)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -49,5 +50,24 @@ class ClientViewSet(viewsets.ModelViewSet):
 class ClientUserViewSet(viewsets.ModelViewSet):
     queryset = ClientUser.objects.all().order_by('-id')
     serializer_class = ClientUserSerializer
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
 
+    def list(self, request):
+        reseller = get_object_or_404(Reseller,owner=request.user)
+        client = get_object_or_404(Client,id=request.data['client'])
+        queryset = ClientUser.objects.filter(reseller=reseller, client=client)
+        serializer = ClientSerializer(queryset, many=True)
+        return Response(serializer.data)
 
+    def create(self, request):
+        reseller = get_object_or_404(Reseller,owner=request.user)
+        client = Client.objects.all(reseller=reseller,id=request.data['client'])
+        if client:
+            request.data['client'] = client
+            serializer = ClientUserSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response('Current reseller does not have permissions for this client', status=status.HTTP_403_FORBIDDEN)

@@ -64,7 +64,7 @@ class ClientUser(models.Model):
     usage = models.IntegerField()
     admin = models.BooleanField(default=False)
     limit = models.IntegerField()
-    company = models.ForeignKey(Client)
+    client = models.ForeignKey(Client)
 
     def __str__(self):
         return 'ClientUser {id}'.format(id=self.id)

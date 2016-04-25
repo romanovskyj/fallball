@@ -64,8 +64,6 @@ class ClientSerializer(rest_serializers.HyperlinkedModelSerializer):
         fields = ('id', 'creation_date', 'users_amount', 'storage')
 
     def create(self, validated_data):
-        #import pdb
-        #pdb.set_trace()
         return Client.objects.create(reseller=self.initial_data['reseller'], **validated_data)
 
     def get_users_amount(self, obj):
@@ -84,7 +82,10 @@ class ClientUserSerializer(rest_serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = ClientUser
-        fields = ('id', 'password', 'role', 'storage')
+        fields = ('id', 'client', 'password', 'role', 'storage')
+
+    def create(self, validated_data):
+        return ClientUser.objects.create(client=self.initial_data['client'], **validated_data)
 
     def get_role(self, obj):
         if obj.admin is True:
