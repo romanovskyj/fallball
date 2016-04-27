@@ -1,12 +1,12 @@
+from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Sum
-from django.contrib.auth.models import User
+
 
 class Reseller(models.Model):
     id = models.CharField(max_length=120, primary_key=True)
     limit = models.IntegerField()
     owner = models.OneToOneField(User)
-    token = models.CharField(max_length=120)
 
     def __str__(self):
         return 'Reseller {id}'.format(id=self.id)

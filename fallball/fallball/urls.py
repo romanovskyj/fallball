@@ -2,7 +2,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from rest_framework_nested import routers
 
-from fb.views import ClientViewSet, ResellerViewSet, ClientUserViewSet
+from fb.views import ClientUserViewSet, ClientViewSet, ResellerViewSet
 
 router = routers.SimpleRouter()
 router.register(r'resellers', ResellerViewSet)
