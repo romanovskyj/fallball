@@ -30,15 +30,15 @@ class ClientViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
-    def list(self, request):
-        reseller = get_object_or_404(Reseller,owner=request.user)
+    def list(self, request, **kwargs):
+        reseller = get_object_or_404(Reseller,id=kwargs['reseller_pk'])
         queryset = Client.objects.filter(reseller=reseller)
         serializer = ClientSerializer(queryset, many=True)
         return Response(serializer.data)
 
-    def create(self, request):
+    def create(self, request, **kwargs):
         request.data['creation_date'] = datetime.now()
-        request.data['reseller'] = get_object_or_404(Reseller,owner=request.user)
+        request.data['reseller'] = get_object_or_404(Reseller,id=kwargs['reseller_pk'])
         serializer = ClientSerializer(data=request.data)
 
         if serializer.is_valid():
@@ -52,19 +52,20 @@ class ClientUserViewSet(viewsets.ModelViewSet):
     serializer_class = ClientUserSerializer
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
+    lookup_value_regex = '[-\w]+(?:\@)?[A-Za-z0-9.-]+(?:\.)?[A-Za-z]{2,4}'
 
-    def list(self, request):
-        reseller = get_object_or_404(Reseller,owner=request.user)
-        client = get_object_or_404(Client,id=request.data['client'])
-        queryset = ClientUser.objects.filter(reseller=reseller, client=client)
-        serializer = ClientSerializer(queryset, many=True)
+    def list(self, request, **kwargs):
+        reseller = get_object_or_404(Reseller,id=kwargs['reseller_pk'])
+        client = get_object_or_404(Client,reseller=reseller, id=kwargs['client_pk'])
+        queryset = ClientUser.objects.filter(client=client)
+        serializer = ClientUserSerializer(queryset, many=True)
         return Response(serializer.data)
 
-    def create(self, request):
-        reseller = get_object_or_404(Reseller,owner=request.user)
-        client = Client.objects.all(reseller=reseller,id=request.data['client'])
+    def create(self, request, **kwargs):
+        reseller = get_object_or_404(Reseller,id=kwargs['reseller_pk'])
+        client = Client.objects.filter(reseller=reseller,id=kwargs['client_pk'])
         if client:
-            request.data['client'] = client
+            request.data['client'] = client[0].id
             serializer = ClientUserSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()

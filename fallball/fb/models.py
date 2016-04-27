@@ -44,7 +44,7 @@ class Client(models.Model):
         """
         Calculate total usage amount for particular reseller
         """
-        total = ClientUser.objects.filter(company=self).aggregate(Sum('usage'))
+        total = ClientUser.objects.filter(client=self).aggregate(Sum('usage'))
         if total['usage__sum'] is not None:
             return total['usage__sum']
         else:
@@ -54,14 +54,14 @@ class Client(models.Model):
         """
         Calculate users amount for particular company
         """
-        return ClientUser.objects.filter(company=self).count()
+        return ClientUser.objects.filter(client=self).count()
 
 
 class ClientUser(models.Model):
     # email field contains user email and used as user id
     id = models.EmailField(primary_key=True)
     password = models.CharField(max_length=12)
-    usage = models.IntegerField()
+    usage = models.IntegerField(blank=True)
     admin = models.BooleanField(default=False)
     limit = models.IntegerField()
     client = models.ForeignKey(Client)

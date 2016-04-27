@@ -1,3 +1,5 @@
+from random import randint
+
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers as rest_serializers
@@ -71,21 +73,24 @@ class ClientSerializer(rest_serializers.HyperlinkedModelSerializer):
 
 
 class StorageClientUserSerializer(rest_serializers.HyperlinkedModelSerializer):
+
     class Meta:
         model = ClientUser
         fields = ('usage', 'limit')
 
 
-class ClientUserSerializer(rest_serializers.HyperlinkedModelSerializer):
+class ClientUserSerializer(rest_serializers.ModelSerializer):
     role = rest_serializers.SerializerMethodField()
     storage = StorageClientUserSerializer(source='*')
+    #client = rest_serializers.SerializerMethodField()
 
     class Meta:
         model = ClientUser
         fields = ('id', 'client', 'password', 'role', 'storage')
 
     def create(self, validated_data):
-        return ClientUser.objects.create(client=self.initial_data['client'], **validated_data)
+        usage = randint(0,50)
+        return ClientUser.objects.create(usage=usage, **validated_data)
 
     def get_role(self, obj):
         if obj.admin is True:

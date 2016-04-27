@@ -1,15 +1,23 @@
 from django.conf.urls import include, url
 from django.contrib import admin
-from rest_framework import routers
+from rest_framework_nested import routers
 
 from fb.views import ClientViewSet, ResellerViewSet, ClientUserViewSet
 
-router = routers.DefaultRouter()
+router = routers.SimpleRouter()
 router.register(r'resellers', ResellerViewSet)
-router.register(r'clients', ClientViewSet)
-router.register(r'users', ClientUserViewSet)
+
+resellers_router = routers.NestedSimpleRouter(router, r'resellers', lookup='reseller')
+resellers_router.register(r'clients',ClientViewSet)
+
+client_router = routers.NestedSimpleRouter(resellers_router, r'clients', lookup='client')
+client_router.register(r'users', ClientUserViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),
+    url(r'^', include(resellers_router.urls)),
+    url(r'^', include(client_router.urls)),
     url(r'^admin/', admin.site.urls),
 ]
+import pdb
+pdb.set_trace()
