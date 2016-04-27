@@ -19,5 +19,3 @@ urlpatterns = [
     url(r'^', include(client_router.urls)),
     url(r'^admin/', admin.site.urls),
 ]
-import pdb
-pdb.set_trace()
