@@ -89,7 +89,7 @@ class ClientUserSerializer(rest_serializers.ModelSerializer):
         fields = ('id', 'client', 'password', 'role', 'storage')
 
     def create(self, validated_data):
-        usage = randint(0,50)
+        usage = randint(0, validated_data['limit'])
         return ClientUser.objects.create(usage=usage, **validated_data)
 
     def get_role(self, obj):
