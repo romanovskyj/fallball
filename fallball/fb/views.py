@@ -31,6 +31,8 @@ class ResellerViewSet(ModelViewSet):
         """
         Method is overwritten in order to implement superuser check
         """
+        import pdb
+        pdb.set_trace()
         if request.user.is_superuser:
             return ModelViewSet.list(self, request, *args, **kwargs)
         return Response("Only superuser can get resellers list", status=status.HTTP_403_FORBIDDEN)
