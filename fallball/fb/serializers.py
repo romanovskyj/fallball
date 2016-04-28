@@ -47,7 +47,7 @@ class ResellerSerializer(rest_serializers.HyperlinkedModelSerializer):
     def get_clients_amount(self, obj):
         return obj.get_clients_amount()
 
-    def get_token(self,obj):
+    def get_token(self, obj):
         """
         As token exists inside User object, we need to get it to show it with particular reseller
         """

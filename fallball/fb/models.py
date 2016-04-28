@@ -6,6 +6,8 @@ from django.db.models import Sum
 class Reseller(models.Model):
     id = models.CharField(max_length=120, primary_key=True)
     limit = models.IntegerField()
+    # owner property is a foreign key related to User instance
+    # It is needed to use token authorization
     owner = models.OneToOneField(User)
 
     def __str__(self):
@@ -42,7 +44,7 @@ class Client(models.Model):
 
     def get_usage(self):
         """
-        Calculate total usage amount for particular reseller
+        Calculate total usage of all client users
         """
         total = ClientUser.objects.filter(client=self).aggregate(Sum('usage'))
         if total['usage__sum'] is not None:
@@ -64,6 +66,7 @@ class ClientUser(models.Model):
     usage = models.IntegerField(blank=True)
     admin = models.BooleanField(default=False)
     limit = models.IntegerField()
+    # Every user belongs to particular client
     client = models.ForeignKey(Client)
 
     def __str__(self):
