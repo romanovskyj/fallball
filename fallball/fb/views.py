@@ -31,8 +31,6 @@ class ResellerViewSet(ModelViewSet):
         """
         Method is overwritten in order to implement superuser check
         """
-        import pdb
-        pdb.set_trace()
         if request.user.is_superuser:
             return ModelViewSet.list(self, request, *args, **kwargs)
         return Response("Only superuser can get resellers list", status=status.HTTP_403_FORBIDDEN)
@@ -62,11 +60,15 @@ class ClientViewSet(ModelViewSet):
             reseller = Reseller.objects.filter(id=kwargs['reseller_pk'], owner=request.user)[0]
 
         if reseller:
-            # Get current date to add it to client.creation_date
-            request.data['creation_date'] = datetime.now()
-            # Every client should belong to particular reseller
-            request.data['reseller'] = reseller
-            return ModelViewSet.create(self, request, *args, **kwargs)
+            # Check if there is a free space for new client
+            free_space = reseller.limit - reseller.get_usage()
+            if free_space >= request.data['storage']['limit']:
+                # Get current date to add it to client.creation_date
+                request.data['creation_date'] = datetime.now()
+                # Every client should belong to particular reseller
+                request.data['reseller'] = reseller
+                return ModelViewSet.create(self, request, *args, **kwargs)
+            return Response("Reseller limit is reached", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response("Permission denied", status=status.HTTP_403_FORBIDDEN)
 
@@ -123,10 +125,14 @@ class ClientUserViewSet(ModelViewSet):
 
         if reseller:
             # get client to provide it for user creation
-            client = Client.objects.filter(reseller=reseller, id=kwargs['client_pk'])
+            client = Client.objects.filter(reseller=reseller, id=kwargs['client_pk'])[0]
             if client:
-                request.data['client'] = client[0].id
-                return ModelViewSet.create(self, request, *args, **kwargs)
+                # Check if client has free space for new user
+                free_space = client.limit - client.get_usage()
+                if free_space >= request.data['storage']['limit']:
+                    request.data['client'] = client.id
+                    return ModelViewSet.create(self, request, *args, **kwargs)
+                return Response('Client limit is reached', status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response('Current reseller does not have permissions for this client', status=status.HTTP_403_FORBIDDEN)
 
