@@ -1,4 +1,5 @@
 # The base set of requirements is just Django
+# The project is run by Python 3 version
 
 drf-nested-routers
 djangorestframework
