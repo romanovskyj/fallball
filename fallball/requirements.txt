@@ -1,0 +1,5 @@
+# The base set of requirements is just Django
+
+drf-nested-routers
+djangorestframework
+django
