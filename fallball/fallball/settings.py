@@ -105,6 +105,6 @@ STATIC_URL = '/static/'
 
 REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
-    'DEFAULT_PAGINATION_CLASS': 'fallball.pagination.PageNumberPaginationDataOnly',
+    'DEFAULT_PAGINATION_CLASS': 'fallballapp.pagination.PageNumberPaginationDataOnly',
     'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.NamespaceVersioning',
 }

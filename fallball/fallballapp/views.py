@@ -55,9 +55,9 @@ class ClientViewSet(ModelViewSet):
         Create new reseller client
         """
         if request.user.is_superuser:
-            reseller = Reseller.objects.filter(id=kwargs['reseller_pk'])[0]
+            reseller = Reseller.objects.filter(id=kwargs['reseller_pk']).first()
         else:
-            reseller = Reseller.objects.filter(id=kwargs['reseller_pk'], owner=request.user)[0]
+            reseller = Reseller.objects.filter(id=kwargs['reseller_pk'], owner=request.user).first()
 
         if reseller:
             # Check if there is a free space for new client
@@ -80,12 +80,12 @@ class ClientViewSet(ModelViewSet):
         # If admin token is provided we just get reseller from the database
         # If reseller token is provided we need to check that clients are owned by this reseller
         if request.user.is_superuser:
-            reseller = Reseller.objects.filter(id=kwargs['reseller_pk'])
+            reseller = Reseller.objects.filter(id=kwargs['reseller_pk']).first()
         else:
-            reseller = Reseller.objects.filter(id=kwargs['reseller_pk'], owner=request.user)
+            reseller = Reseller.objects.filter(id=kwargs['reseller_pk'], owner=request.user).first()
 
         if reseller:
-            queryset = Client.objects.filter(reseller=reseller[0])
+            queryset = Client.objects.filter(reseller=reseller)
             serializer = ClientSerializer(queryset, many=True)
             return Response(serializer.data)
 
@@ -114,8 +114,6 @@ class ClientUserViewSet(ModelViewSet):
     serializer_class = ClientUserSerializer
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
-    # Redefine regex in order to get user email as id
-    lookup_value_regex = '[-\w]+(?:\@)?[A-Za-z0-9.-]+(?:\.)?[A-Za-z]{2,4}'
 
     def create(self, request, *args, **kwargs):
         if request.user.is_superuser:
@@ -125,7 +123,7 @@ class ClientUserViewSet(ModelViewSet):
 
         if reseller:
             # get client to provide it for user creation
-            client = Client.objects.filter(reseller=reseller, id=kwargs['client_pk'])[0]
+            client = Client.objects.filter(reseller=reseller, id=kwargs['client_pk']).first()
             if client:
                 # Check if client has free space for new user
                 free_space = client.limit - client.get_usage()

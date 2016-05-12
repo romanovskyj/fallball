@@ -36,10 +36,9 @@ class ResellerSerializer(rest_serializers.HyperlinkedModelSerializer):
         This method is overwritten in order to create User object and associate it with reseller.
         This operation is needed to create token for reseller
         """
-        if not User.objects.filter(username=validated_data['id']):
+        if not User.objects.filter(username=validated_data['id']).exists():
             user = User(username=validated_data['id'])
             user.save()
-            Token.objects.create(user=user)
             return Reseller.objects.create(owner=user, **validated_data)
         else:
             raise ValidationError('Reseller with such id is already created')
@@ -51,8 +50,8 @@ class ResellerSerializer(rest_serializers.HyperlinkedModelSerializer):
         """
         As token exists inside User object, we need to get it to show it with particular reseller
         """
-        token = Token.objects.filter(user=obj.owner)
-        return token[0].key
+        token = Token.objects.filter(user=obj.owner).first()
+        return token.key
 
 
 class StorageClientSerializer(rest_serializers.HyperlinkedModelSerializer):
@@ -105,7 +104,7 @@ class ClientUserSerializer(rest_serializers.ModelSerializer):
         return ClientUser.objects.create(usage=usage, **validated_data)
 
     def get_role(self, obj):
-        if obj.admin is True:
+        if obj.admin:
             return "admin"
         else:
             return "user"

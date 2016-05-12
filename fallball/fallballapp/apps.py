@@ -1,5 +1,8 @@
 from django.apps import AppConfig
 
 
-class FallballappConfig(AppConfig):
+class FallballAppConfig(AppConfig):
     name = 'fallballapp'
+
+    def ready(self):
+        from fallballapp import signals
