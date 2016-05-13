@@ -1,0 +1,17 @@
+{% extends "ui/base.html" %}
+
+{% block content %}
+<h1>Create New Reseller</h1>
+<div class="box" style="width:500px">
+    <form class="form-horizontal" method="POST" action="/ui/resellers/new/">
+        {% csrf_token %}
+        <div class="box-body">
+            <label class="col-sm-4 control-label">Partner ID:</label>
+            <div class="col-sm-3"> {{ form.partnerid }}</div>
+        </div>
+        <div class="box-footer">
+            <button type="submit" value="Submit" class="btn btn-primary">Create</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
