@@ -66,7 +66,7 @@ class ClientViewSet(ModelViewSet):
                 # Every client should belong to particular reseller
                 request.data['reseller'] = reseller
                 return ModelViewSet.create(self, request, *args, **kwargs)
-            return Response("Reseller limit is reached", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response("Reseller limit is reached", status=status.HTTP_400_BAD_REQUEST)
 
         return Response("Permission denied", status=status.HTTP_403_FORBIDDEN)
 
@@ -128,7 +128,7 @@ class ClientUserViewSet(ModelViewSet):
                 if free_space >= request.data['storage']['limit']:
                     request.data['client'] = client.id
                     return ModelViewSet.create(self, request, *args, **kwargs)
-                return Response('Client limit is reached', status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                return Response('Client limit is reached', status=status.HTTP_400_BAD_REQUEST)
 
         return Response('Current reseller does not have permissions for this client', status=status.HTTP_403_FORBIDDEN)
 

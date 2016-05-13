@@ -23,10 +23,9 @@ class Reseller(models.Model):
         """
         Calculate usage of all clients for particular reseller
         """
-        total = 0
-        client_list = Client.objects.filter(reseller=self)
-        for client in client_list:
-            total = total + client.get_usage()
+        total = (Client.objects.filter(reseller=self).
+                 annotate(sum_usage=Sum('clientuser__usage')).
+                 aggregate(Sum('sum_usage')))
         return total
 
 
@@ -47,10 +46,7 @@ class Client(models.Model):
         Calculate total usage of all client users
         """
         total = ClientUser.objects.filter(client=self).aggregate(Sum('usage'))
-        if total['usage__sum'] is not None:
-            return total['usage__sum']
-        else:
-            return 0
+        return total['usage__sum'] or 0
 
     def get_users_amount(self):
         """
