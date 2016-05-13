@@ -5,4 +5,4 @@ class FallballAppConfig(AppConfig):
     name = 'fallballapp'
 
     def ready(self):
-        from fallballapp import signals
+        from fallballapp import signals  # noqa
