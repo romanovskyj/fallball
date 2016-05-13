@@ -37,7 +37,7 @@ class ResellerSerializer(rest_serializers.HyperlinkedModelSerializer):
         This operation is needed to create token for reseller
         """
         if not User.objects.filter(username=validated_data['id']).exists():
-            user = User(username=validated_data['id'])
+            user = User.objects.create(username=validated_data['id'])
             user.save()
             return Reseller.objects.create(owner=user, **validated_data)
         else:

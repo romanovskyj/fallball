@@ -63,8 +63,6 @@ class ClientViewSet(ModelViewSet):
             # Check if there is a free space for new client
             free_space = reseller.limit - reseller.get_usage()
             if free_space >= request.data['storage']['limit']:
-                # Get current date to add it to client.creation_date
-                request.data['creation_date'] = datetime.now()
                 # Every client should belong to particular reseller
                 request.data['reseller'] = reseller
                 return ModelViewSet.create(self, request, *args, **kwargs)

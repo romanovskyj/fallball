@@ -33,7 +33,7 @@ class Reseller(models.Model):
 class Client(models.Model):
     # Instance_id contains company name and used as client id
     id = models.CharField(max_length=150, primary_key=True)
-    creation_date = models.DateTimeField()
+    creation_date = models.DateTimeField(auto_now_add=True)
     limit = models.IntegerField()
 
     # Every client belongs to particular reseller
