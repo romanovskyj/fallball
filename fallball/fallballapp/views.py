@@ -8,6 +8,7 @@ from rest_framework.viewsets import ModelViewSet
 from .models import Client, ClientUser, Reseller
 from .serializers import (ClientSerializer, ClientUserSerializer,
                           ResellerSerializer)
+from .utils import get_object_or_403
 
 
 class ResellerViewSet(ModelViewSet):
@@ -53,9 +54,9 @@ class ClientViewSet(ModelViewSet):
         Create new reseller client
         """
         if request.user.is_superuser:
-            reseller = Reseller.objects.filter(pk=kwargs['reseller_pk']).first()
+            reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'])
         else:
-            reseller = Reseller.objects.filter(pk=kwargs['reseller_pk'], owner=request.user).first()
+            reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
 
         if reseller:
             # Check if there is a free space for new client
@@ -76,9 +77,9 @@ class ClientViewSet(ModelViewSet):
         # If admin token is provided we just get reseller from the database
         # If reseller token is provided we need to check that clients are owned by this reseller
         if request.user.is_superuser:
-            reseller = Reseller.objects.filter(pk=kwargs['reseller_pk']).first()
+            reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'])
         else:
-            reseller = Reseller.objects.filter(pk=kwargs['reseller_pk'], owner=request.user).first()
+            reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
 
         if reseller:
             queryset = Client.objects.filter(reseller=reseller)
@@ -92,9 +93,9 @@ class ClientViewSet(ModelViewSet):
         Return particular client which owned by particular reseller
         """
         if request.user.is_superuser:
-            reseller = Reseller.objects.filter(pk=kwargs['reseller_pk'])
+            reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'])
         else:
-            reseller = Reseller.objects.filter(pk=kwargs['reseller_pk'], owner=request.user)
+            reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
 
         if reseller:
             return ModelViewSet.retrieve(self, request, *args, **kwargs)
@@ -113,9 +114,9 @@ class ClientUserViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         if request.user.is_superuser:
-            reseller = Reseller.objects.filter(pk=kwargs['reseller_pk'])
+            reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'])
         else:
-            reseller = Reseller.objects.filter(pk=kwargs['reseller_pk'], owner=request.user)
+            reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
 
         if reseller:
             # get client to provide it for user creation
@@ -132,9 +133,9 @@ class ClientUserViewSet(ModelViewSet):
 
     def list(self, request, **kwargs):
         if request.user.is_superuser:
-            reseller = Reseller.objects.filter(pk=kwargs['reseller_pk'])
+            reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'])
         else:
-            reseller = Reseller.objects.filter(pk=kwargs['reseller_pk'], owner=request.user)
+            reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
 
         if reseller:
             client = get_object_or_404(Client, reseller=reseller, pk=kwargs['client_pk'])
@@ -145,9 +146,9 @@ class ClientUserViewSet(ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         if request.user.is_superuser:
-            reseller = Reseller.objects.filter(pk=kwargs['reseller_pk'])
+            reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'])
         else:
-            reseller = Reseller.objects.filter(pk=kwargs['reseller_pk'], owner=request.user)
+            reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
 
         if reseller:
             return ModelViewSet.retrieve(self, request, *args, **kwargs)
