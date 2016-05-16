@@ -25,8 +25,8 @@ class Reseller(models.Model):
         """
         total = (Client.objects.filter(reseller=self).
                  annotate(sum_usage=Sum('clientuser__usage')).
-                 aggregate(Sum('sum_usage')))
-        return total
+                 aggregate(Sum('sum_usage')))['sum_usage__sum']
+        return total or 0
 
 
 class Client(models.Model):
