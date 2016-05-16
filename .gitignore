@@ -89,7 +89,7 @@ ENV/
 .ropeproject
 
 #project local database
-fallball/fallballapp/db.sqlite3
+fallball/db.sqlite3
 
 # SublimeText template
 # cache files for sublime text
