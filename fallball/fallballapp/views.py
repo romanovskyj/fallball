@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.decorators import detail_route
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -87,11 +88,22 @@ class ClientViewSet(ModelViewSet):
         Return particular client which owned by particular reseller
         """
         if request.user.is_superuser:
-            reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'])
+            get_object_or_403(Reseller, pk=kwargs['reseller_pk'])
         else:
-            reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
+            get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
 
         return ModelViewSet.retrieve(self, request, *args, **kwargs)
+
+    @detail_route(methods=['get'])
+    def reset(self, request, *args, **kwargs):
+        """
+        Recreate client to initial state
+        """
+        if request.user.is_superuser:
+            get_object_or_403(Reseller, pk=kwargs['reseller_pk'])
+        else:
+            get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
+        # reset will be implemented here
 
 
 class ClientUserViewSet(ModelViewSet):
@@ -133,8 +145,8 @@ class ClientUserViewSet(ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         if request.user.is_superuser:
-            reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'])
+            get_object_or_403(Reseller, pk=kwargs['reseller_pk'])
         else:
-            reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
+            get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
 
         return ModelViewSet.retrieve(self, request, *args, **kwargs)
