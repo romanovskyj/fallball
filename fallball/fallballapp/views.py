@@ -58,16 +58,13 @@ class ClientViewSet(ModelViewSet):
         else:
             reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
 
-        if reseller:
-            # Check if there is a free space for new client
-            free_space = reseller.limit - reseller.get_usage()
-            if free_space >= request.data['storage']['limit']:
-                # Every client should belong to particular reseller
-                request.data['reseller'] = reseller
-                return ModelViewSet.create(self, request, *args, **kwargs)
-            return Response("Reseller limit is reached", status=status.HTTP_400_BAD_REQUEST)
-
-        return Response("Permission denied", status=status.HTTP_403_FORBIDDEN)
+        # Check if there is a free space for new client
+        free_space = reseller.limit - reseller.get_usage()
+        if free_space >= request.data['storage']['limit']:
+            # Every client should belong to particular reseller
+            request.data['reseller'] = reseller
+            return ModelViewSet.create(self, request, *args, **kwargs)
+        return Response("Reseller limit is reached", status=status.HTTP_400_BAD_REQUEST)
 
     def list(self, request, **kwargs):
         """
@@ -81,12 +78,9 @@ class ClientViewSet(ModelViewSet):
         else:
             reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
 
-        if reseller:
-            queryset = Client.objects.filter(reseller=reseller)
-            serializer = ClientSerializer(queryset, many=True)
-            return Response(serializer.data)
-
-        return Response("Permission denied", status=status.HTTP_403_FORBIDDEN)
+        queryset = Client.objects.filter(reseller=reseller)
+        serializer = ClientSerializer(queryset, many=True)
+        return Response(serializer.data)
 
     def retrieve(self, request, *args, **kwargs):
         """
@@ -97,10 +91,7 @@ class ClientViewSet(ModelViewSet):
         else:
             reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
 
-        if reseller:
-            return ModelViewSet.retrieve(self, request, *args, **kwargs)
-
-        return Response("Permission denied", status=status.HTTP_403_FORBIDDEN)
+        return ModelViewSet.retrieve(self, request, *args, **kwargs)
 
 
 class ClientUserViewSet(ModelViewSet):
@@ -118,17 +109,15 @@ class ClientUserViewSet(ModelViewSet):
         else:
             reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
 
-        if reseller:
-            # get client to provide it for user creation
-            client = Client.objects.filter(reseller=reseller, pk=kwargs['client_pk']).first()
-            if client:
-                # Check if client has free space for new user
-                free_space = client.limit - client.get_usage()
-                if free_space >= request.data['storage']['limit']:
-                    request.data['client'] = client.id
-                    return ModelViewSet.create(self, request, *args, **kwargs)
-                return Response('Client limit is reached', status=status.HTTP_400_BAD_REQUEST)
-
+        # get client to provide it for user creation
+        client = Client.objects.filter(reseller=reseller, pk=kwargs['client_pk']).first()
+        if client:
+            # Check if client has free space for new user
+            free_space = client.limit - client.get_usage()
+            if free_space >= request.data['storage']['limit']:
+                request.data['client'] = client.id
+                return ModelViewSet.create(self, request, *args, **kwargs)
+            return Response('Client limit is reached', status=status.HTTP_400_BAD_REQUEST)
         return Response('Current reseller does not have permissions for this client', status=status.HTTP_403_FORBIDDEN)
 
     def list(self, request, **kwargs):
@@ -137,12 +126,11 @@ class ClientUserViewSet(ModelViewSet):
         else:
             reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
 
-        if reseller:
-            client = get_object_or_404(Client, reseller=reseller, pk=kwargs['client_pk'])
-            queryset = ClientUser.objects.filter(client=client)
-            serializer = ClientUserSerializer(queryset, many=True)
-            return Response(serializer.data)
-        return Response("Permission denied", status=status.HTTP_403_FORBIDDEN)
+        client = get_object_or_404(Client, reseller=reseller, pk=kwargs['client_pk'])
+        queryset = ClientUser.objects.filter(client=client)
+        serializer = ClientUserSerializer(queryset, many=True)
+        return Response(serializer.data)
+
 
     def retrieve(self, request, *args, **kwargs):
         if request.user.is_superuser:
@@ -150,6 +138,4 @@ class ClientUserViewSet(ModelViewSet):
         else:
             reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
 
-        if reseller:
-            return ModelViewSet.retrieve(self, request, *args, **kwargs)
-        return Response("Permission denied", status=status.HTTP_403_FORBIDDEN)
+        return ModelViewSet.retrieve(self, request, *args, **kwargs)
