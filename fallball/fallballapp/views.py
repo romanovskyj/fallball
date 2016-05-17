@@ -131,7 +131,6 @@ class ClientUserViewSet(ModelViewSet):
         serializer = ClientUserSerializer(queryset, many=True)
         return Response(serializer.data)
 
-
     def retrieve(self, request, *args, **kwargs):
         if request.user.is_superuser:
             reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'])
