@@ -114,6 +114,8 @@ class ClientUserViewSet(ModelViewSet):
     serializer_class = ClientUserSerializer
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
+    # Redefine regex in order to get user email as id
+    lookup_value_regex = '[^@]+@[^@]+\.[^@]+'
 
     def create(self, request, *args, **kwargs):
         if request.user.is_superuser:
