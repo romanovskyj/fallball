@@ -57,7 +57,6 @@ class ResellerSerializer(rest_serializers.HyperlinkedModelSerializer):
             raise ObjectDoesNotExist()
 
 
-
 class StorageClientSerializer(rest_serializers.HyperlinkedModelSerializer):
     usage = rest_serializers.SerializerMethodField()
 
