@@ -9,7 +9,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    replaces = [('fallballapp', '0001_initial'), ('fallballapp', '0002_auto_20160513_1601')]
+    replaces = [('fallballapp', '0001_initial'),]
 
     initial = True
 

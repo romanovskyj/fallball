@@ -1,7 +1,6 @@
 from random import randint
 
 from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers as rest_serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import ValidationError
@@ -37,11 +36,11 @@ class ResellerSerializer(rest_serializers.HyperlinkedModelSerializer):
         This method is overwritten in order to create User object and associate it with reseller.
         This operation is needed to create token for reseller
         """
-        if not User.objects.filter(username=validated_data['id']).exists():
+        if User.objects.filter(username=validated_data['id']).exists():
+            raise ValidationError('Reseller with such id is already created')
+        else:
             user = User.objects.create(username=validated_data['id'])
             return Reseller.objects.create(owner=user, **validated_data)
-        else:
-            raise ValidationError('Reseller with such id is already created')
 
     def get_clients_amount(self, obj):
         return obj.get_clients_amount()
@@ -50,11 +49,8 @@ class ResellerSerializer(rest_serializers.HyperlinkedModelSerializer):
         """
         As token exists inside User object, we need to get it to show it with particular reseller
         """
-        try:
-            token = Token.objects.filter(user=obj.owner).first()
-            return token.key
-        except:
-            raise ObjectDoesNotExist()
+        token = Token.objects.filter(user=obj.owner).first()
+        return token.key if token else None
 
 
 class StorageClientSerializer(rest_serializers.HyperlinkedModelSerializer):

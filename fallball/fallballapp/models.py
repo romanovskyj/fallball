@@ -23,9 +23,9 @@ class Reseller(models.Model):
         """
         Calculate usage of all clients for particular reseller
         """
-        total = (Client.objects.filter(reseller=self).
-                 annotate(sum_usage=Sum('clientuser__usage')).
-                 aggregate(Sum('sum_usage')))['sum_usage__sum']
+        total = (Client.objects.filter(reseller=self)
+                 .annotate(sum_usage=Sum('clientuser__usage'))
+                 .aggregate(Sum('sum_usage')))['sum_usage__sum']
         return total or 0
 
 
