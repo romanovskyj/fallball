@@ -38,9 +38,9 @@ class ResellerSerializer(rest_serializers.HyperlinkedModelSerializer):
         """
         if User.objects.filter(username=validated_data['id']).exists():
             raise ValidationError('Reseller with such id is already created')
-        else:
-            user = User.objects.create(username=validated_data['id'])
-            return Reseller.objects.create(owner=user, **validated_data)
+
+        user = User.objects.create(username=validated_data['id'])
+        return Reseller.objects.create(owner=user, **validated_data)
 
     def get_clients_amount(self, obj):
         return obj.get_clients_amount()
