@@ -103,8 +103,14 @@ class ClientViewSet(ModelViewSet):
             get_object_or_403(Reseller, pk=kwargs['reseller_pk'])
         else:
             get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
-        # reset will be implemented here
 
+        # Before repairing objects to initial state
+        # it needs to delete current objects
+        client = get_object_or_404(Client, pk=kwargs['pk'])
+        ClientUser.objects.filter(client=client).delete()
+        client.delete()
+
+        return Response("Client has been repaired", status=status.HTTP_200_OK)
 
 class ClientUserViewSet(ModelViewSet):
     """
