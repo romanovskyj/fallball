@@ -121,11 +121,16 @@ class ClientViewSet(ModelViewSet):
                 ClientUser.objects.filter(client=client).delete()
                 client.delete()
 
+                import pdb
+                pdb.set_trace()
                 # Repair initial objects
-                Client.objects.create(**initial_client)
-                initial_client_users = [x for x in data if x['client'] == kwargs['pk']]
-                for client_user in initial_client_users:
-                    ClientUser.objects.create(**client_user)
+                Client.objects.create(id=initial_client['pk'],
+                                      creation_date=initial_client['fields']['creation_date'],
+                                      limit=initial_client['fields']['limit'],
+                                      reseller_id=initial_client['fields']['reseller'])
+                #initial_client_users = [x for x in data if x['client'] == kwargs['pk']]
+                #for client_user in initial_client_users:
+                #    ClientUser.objects.create(**client_user)
 
                 return Response("Client has been repaired", status=status.HTTP_200_OK)
 
