@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 
 from .models import Reseller, Client, ClientUser
 
+
 def get_object_or_403(*args, **kwargs):
     try:
         result = get_object_or_404(*args, **kwargs)

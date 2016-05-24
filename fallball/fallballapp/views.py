@@ -9,7 +9,7 @@ from rest_framework.viewsets import ModelViewSet
 from .models import Client, ClientUser, Reseller
 from .serializers import (ClientSerializer, ClientUserSerializer,
                           ResellerSerializer)
-from .utils import get_object_or_403
+from .utils import get_object_or_403, repair
 
 
 class ResellerViewSet(ModelViewSet):
@@ -100,12 +100,14 @@ class ClientViewSet(ModelViewSet):
         Recreate client to initial state
         """
         if request.user.is_superuser:
-            get_object_or_403(Reseller, pk=kwargs['reseller_pk'])
+            reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'])
         else:
-            get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
+            reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
 
+        client = get_object_or_403(Client, reseller=reseller, pk=kwargs['pk'])
+        repair(client)
 
-
+        return Response("Client has been repaired", status=status.HTTP_200_OK)
 
 class ClientUserViewSet(ModelViewSet):
     """
