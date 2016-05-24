@@ -1,6 +1,3 @@
-import json
-import os
-
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
@@ -107,34 +104,7 @@ class ClientViewSet(ModelViewSet):
         else:
             get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
 
-        # Before repairing objects to initial state
-        # it needs to check if object has initial data
-        current_dir = os.path.dirname(__file__)
-        json_file = os.path.join(current_dir, 'fixtures/dbdump.json')
-        with open(json_file) as dbdump:
-            data = json.load(dbdump)
-            initial_client = [x for x in data if x['pk'] == kwargs['pk']][0]
-            if initial_client:
 
-                # It needs to delete current client data before reparing
-                client = get_object_or_404(Client, pk=kwargs['pk'])
-                ClientUser.objects.filter(client=client).delete()
-                client.delete()
-
-                import pdb
-                pdb.set_trace()
-                # Repair initial objects
-                Client.objects.create(id=initial_client['pk'],
-                                      creation_date=initial_client['fields']['creation_date'],
-                                      limit=initial_client['fields']['limit'],
-                                      reseller_id=initial_client['fields']['reseller'])
-                #initial_client_users = [x for x in data if x['client'] == kwargs['pk']]
-                #for client_user in initial_client_users:
-                #    ClientUser.objects.create(**client_user)
-
-                return Response("Client has been repaired", status=status.HTTP_200_OK)
-
-            return Response("This object does not have initial copy", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class ClientUserViewSet(ModelViewSet):
