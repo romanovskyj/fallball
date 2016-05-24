@@ -105,7 +105,7 @@ class ClientViewSet(ModelViewSet):
             reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
 
         client = get_object_or_403(Client, reseller=reseller, pk=kwargs['pk'])
-        repair(client)
+        repair(Client, kwargs['pk'])
 
         return Response("Client has been repaired", status=status.HTTP_200_OK)
 

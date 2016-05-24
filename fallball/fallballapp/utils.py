@@ -16,7 +16,7 @@ def get_object_or_403(*args, **kwargs):
     return result
 
 
-def repair(obj):
+def repair(model, pk):
     """
     Used to repair the object and all his childs to initial state
     """
@@ -26,44 +26,43 @@ def repair(obj):
     json_file = os.path.join(current_dir, 'fixtures/dbdump.json')
     with open(json_file) as dbdump:
         data = json.load(dbdump)
-        initial_obj = [x for x in data if x['pk'] == obj.pk][0]
+        initial_obj = [x for x in data if x['pk'] == pk][0]
         if initial_obj:
 
             # Delete current data before reparing
+            obj = get_object_or_404(model, pk=pk)
             obj.delete()
 
             # Repair reseller to initial state and itialize reseller clients reparing
-            if isinstance(obj, Reseller):
+            if model == Reseller:
                 # Repair initial objects
                 Reseller.objects.create(id=initial_obj['pk'],
                                         limit=initial_obj['fields']['limit'],
                                         owner_id=initial_obj['fields']['owner'])
                 initial_clients = ([x for x in data if x['model'] == 'fallballapp.client'
-                                    and x['fields']['reseller'] == obj.pk])
+                                    and x['fields']['reseller'] == pk])
                 for initial_client in initial_clients:
-                    client = get_object_or_404(Client, pk=initial_client['pk'])
-                    repair(client)
+                    repair(Client, initial_client['pk'])
 
             # Repair client to initial state and initialize clientusers reparing
-            elif isinstance(obj, Client):
+            elif model == Client:
                 Client.objects.create(id=initial_obj['pk'],
                                       creation_date=initial_obj['fields']['creation_date'],
                                       limit=initial_obj['fields']['limit'],
                                       reseller_id=initial_obj['fields']['reseller'])
                 initial_client_users = ([x for x in data if x['model'] == 'fallballapp.clientuser'
-                                         and x['fields']['client'] == obj.pk])
+                                         and x['fields']['client'] == initial_obj['pk']])
                 for initial_client_user in initial_client_users:
-                    client_user = get_object_or_404(Client, pk=initial_client_user['pk'])
-                    repair(client_user)
+                    repair(ClientUser, initial_client_user['pk'])
 
-            # Repair clien user
-            elif isinstance(obj, ClientUser):
-                ClientUser.objects.create(id=obj['pk'],
-                                          password=obj['fields']['password'],
-                                          usage=obj['fields']['usage'],
-                                          admin=obj['fields']['admin'],
-                                          limit=obj['fields']['limit'],
-                                          client_id=obj['fields']['client'])
+            # Repair client user
+            elif model == ClientUser):
+                ClientUser.objects.create(id=initial_obj['pk'],
+                                          password=initial_obj['fields']['password'],
+                                          usage=initial_obj['fields']['usage'],
+                                          admin=initial_obj['fields']['admin'],
+                                          limit=initial_obj['fields']['limit'],
+                                          client_id=initial_obj['fields']['client'])
 
             return True
 
