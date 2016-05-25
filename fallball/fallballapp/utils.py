@@ -1,7 +1,7 @@
 import json
 import os
 
-from django.core.exceptions import PermissionDenied,ObjectDoesNotExist
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 
@@ -39,8 +39,8 @@ def repair(model, pk):
                 Reseller.objects.create(id=initial_obj['pk'],
                                         limit=initial_obj['fields']['limit'],
                                         owner_id=initial_obj['fields']['owner'])
-                initial_clients = ([x for x in data if x['model'] == 'fallballapp.client'
-                                    and x['fields']['reseller'] == pk])
+                initial_clients = ([x for x in data if x['model'] == 'fallballapp.client' and
+                                    x['fields']['reseller'] == pk])
                 for initial_client in initial_clients:
                     repair(Client, initial_client['pk'])
 
@@ -50,8 +50,8 @@ def repair(model, pk):
                                       creation_date=initial_obj['fields']['creation_date'],
                                       limit=initial_obj['fields']['limit'],
                                       reseller_id=initial_obj['fields']['reseller'])
-                initial_client_users = ([x for x in data if x['model'] == 'fallballapp.clientuser'
-                                         and x['fields']['client'] == initial_obj['pk']])
+                initial_client_users = ([x for x in data if x['model'] == 'fallballapp.clientuser' and
+                                         x['fields']['client'] == initial_obj['pk']])
                 for initial_client_user in initial_client_users:
                     repair(ClientUser, initial_client_user['pk'])
 

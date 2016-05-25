@@ -54,7 +54,7 @@ class ResellerViewSet(ModelViewSet):
         return Response("All clients has been repaired", status=status.HTTP_200_OK)
 
     @list_route(methods=['get'])
-    def reset(self,request, *args, **kwargs):
+    def reset(self, request, *args, **kwargs):
         """
         Repair particular reseller
         """
@@ -62,7 +62,9 @@ class ResellerViewSet(ModelViewSet):
             resellers = get_all_resellers()
             for reseller in resellers:
                 repair(Reseller, reseller['pk'])
+                return Response("All resellers has been repaired", status=status.HTTP_200_OK)
         return Response("Only superuser can repair all resellers", status=status.HTTP_403_FORBIDDEN)
+
 
 class ClientViewSet(ModelViewSet):
     """
@@ -127,7 +129,8 @@ class ClientViewSet(ModelViewSet):
         else:
             reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
 
-        client = get_object_or_403(Client, reseller=reseller, pk=kwargs['pk'])
+        # Check that client belongs to particular reseller
+        get_object_or_403(Client, reseller=reseller, pk=kwargs['pk'])
         repair(Client, kwargs['pk'])
         return Response("Client has been repaired", status=status.HTTP_200_OK)
 
@@ -143,6 +146,7 @@ class ClientViewSet(ModelViewSet):
 
         repair(Reseller, reseller.pk)
         return Response("All clients has been repaired", status=status.HTTP_200_OK)
+
 
 class ClientUserViewSet(ModelViewSet):
     """
