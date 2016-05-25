@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import detail_route, list_route
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -9,7 +9,7 @@ from rest_framework.viewsets import ModelViewSet
 from .models import Client, ClientUser, Reseller
 from .serializers import (ClientSerializer, ClientUserSerializer,
                           ResellerSerializer)
-from .utils import get_object_or_403, repair
+from .utils import get_object_or_403, repair, get_all_resellers
 
 
 class ResellerViewSet(ModelViewSet):
@@ -40,6 +40,29 @@ class ResellerViewSet(ModelViewSet):
             return ModelViewSet.retrieve(self, request, *args, **kwargs)
         return Response("Only superuser can get reseller information", status=status.HTTP_403_FORBIDDEN)
 
+    @detail_route(methods=['get'])
+    def reset(self, request, *args, **kwargs):
+        """
+        Repair particular reseller
+        """
+        if request.user.is_superuser:
+            reseller = get_object_or_403(Reseller, pk=kwargs['pk'])
+        else:
+            reseller = get_object_or_403(Reseller, pk=kwargs['pk'], owner=request.user)
+
+        repair(Reseller, reseller.pk)
+        return Response("All clients has been repaired", status=status.HTTP_200_OK)
+
+    @list_route(methods=['get'])
+    def reset(self,request, *args, **kwargs):
+        """
+        Repair particular reseller
+        """
+        if request.user.is_superuser:
+            resellers = get_all_resellers()
+            for reseller in resellers:
+                repair(Reseller, reseller['pk'])
+        return Response("Only superuser can repair all resellers", status=status.HTTP_403_FORBIDDEN)
 
 class ClientViewSet(ModelViewSet):
     """
@@ -106,8 +129,20 @@ class ClientViewSet(ModelViewSet):
 
         client = get_object_or_403(Client, reseller=reseller, pk=kwargs['pk'])
         repair(Client, kwargs['pk'])
-
         return Response("Client has been repaired", status=status.HTTP_200_OK)
+
+    @list_route(methods=['get'])
+    def reset(self, request, *args, **kwargs):
+        """
+        Recreate all reseller clients to initial state
+        """
+        if request.user.is_superuser:
+            reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'])
+        else:
+            reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
+
+        repair(Reseller, reseller.pk)
+        return Response("All clients has been repaired", status=status.HTTP_200_OK)
 
 class ClientUserViewSet(ModelViewSet):
     """

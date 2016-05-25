@@ -67,3 +67,15 @@ def repair(model, pk):
             return True
 
         raise ObjectDoesNotExist()
+
+
+def get_all_resellers():
+    """
+    Get all resellers from fixture file
+    """
+    current_dir = os.path.dirname(__file__)
+    json_file = os.path.join(current_dir, 'fixtures/dbdump.json')
+    with open(json_file) as dbdump:
+        data = json.load(dbdump)
+        resellers = [x for x in data if x['model'] == 'fallballapp.reseller']
+        return resellers
