@@ -29,9 +29,9 @@ def repair(model, pk):
         initial_obj = [x for x in data if x['pk'] == pk][0]
         if initial_obj:
 
-            # Delete current data before reparing
-            obj = get_object_or_404(model, pk=pk)
-            obj.delete()
+            # Delete current data before reparing if the object exists
+            obj = model.objects.filter(pk=pk).first()
+            obj.delete() if obj else None
 
             # Repair reseller to initial state and itialize reseller clients reparing
             if model == Reseller:
@@ -56,7 +56,7 @@ def repair(model, pk):
                     repair(ClientUser, initial_client_user['pk'])
 
             # Repair client user
-            elif model == ClientUser):
+            elif model == ClientUser:
                 ClientUser.objects.create(id=initial_obj['pk'],
                                           password=initial_obj['fields']['password'],
                                           usage=initial_obj['fields']['usage'],
