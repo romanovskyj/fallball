@@ -9,7 +9,7 @@ from rest_framework.viewsets import ModelViewSet
 from .models import Client, ClientUser, Reseller
 from .serializers import (ClientSerializer, ClientUserSerializer,
                           ResellerSerializer)
-from .utils import get_object_or_403, repair, get_all_resellers
+from .utils import get_all_resellers, get_object_or_403, repair
 
 
 class ResellerViewSet(ModelViewSet):

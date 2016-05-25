@@ -1,11 +1,11 @@
 import json
 import os
 
-from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 
-from .models import Reseller, Client, ClientUser
+from .models import Client, ClientUser, Reseller
 
 
 def get_object_or_403(*args, **kwargs):
