@@ -144,7 +144,7 @@ class ClientViewSet(ModelViewSet):
         else:
             reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
 
-        repair(Reseller, reseller.pk)
+        repair(Client, reseller.pk)
         return Response("All clients has been repaired", status=status.HTTP_200_OK)
 
 

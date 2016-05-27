@@ -56,10 +56,10 @@ def repair(model, pk):
         # Delete current data before reparing if the object exists
         model.objects.filter(pk=pk).delete()
 
+        import pdb
+        pdb.set_trace()
         # Repair reseller to initial state and itialize reseller clients reparing
         if model is Reseller:
-            import pdb
-            pdb.set_trace()
             initial_obj['fields']['owner_id'] = initial_obj['fields'].pop('owner')
             # Repair initial objects
             Reseller.objects.create(id=initial_obj['pk'],

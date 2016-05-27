@@ -110,4 +110,4 @@ REST_FRAMEWORK = {
 }
 
 
-DBDUMP_FILE = os.path.join(os.path.dirname(__file__), 'fixtures/dbdump.json')
+DBDUMP_FILE = os.path.join(BASE_DIR, 'fallballapp/fixtures/dbdump.json')
