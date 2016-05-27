@@ -5,8 +5,10 @@ from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 
-from .models import Client, ClientUser, Reseller
 import fallball.settings as settings
+
+from .models import Client, ClientUser, Reseller
+
 
 def singleton(f):
     """
@@ -23,16 +25,16 @@ def singleton(f):
 
 
 @singleton
-def _get_key():
+def _get_dump():
     """
     Return json objects loaded from file
     """
-    key = None
+    dump = None
 
-    with open(settings.DBDUMP_FILE,'r') as f:
-        key = json.load(f)
+    with open(settings.DBDUMP_FILE, 'r') as f:
+        dump = json.load(f)
 
-    return key
+    return dump
 
 
 def get_object_or_403(*args, **kwargs):
@@ -49,15 +51,13 @@ def repair(model, pk):
     """
     # Before repairing objects to initial state
     # it needs to check if object has initial data
-    data = _get_key()
+    data = _get_dump()
     initial_obj = [item for item in data if item['pk'] == pk][0]
     if initial_obj:
 
         # Delete current data before reparing if the object exists
         model.objects.filter(pk=pk).delete()
 
-        import pdb
-        pdb.set_trace()
         # Repair reseller to initial state and itialize reseller clients reparing
         if model is Reseller:
             initial_obj['fields']['owner_id'] = initial_obj['fields'].pop('owner')
@@ -98,9 +98,6 @@ def get_all_resellers():
     """
     Get all resellers from fixture file
     """
-    current_dir = os.path.dirname(__file__)
-    json_file = os.path.join(current_dir, 'fixtures/dbdump.json')
-    with open(json_file) as dbdump:
-        data = json.load(dbdump)
-        resellers = [item for item in data if item['model'] == 'fallballapp.reseller']
-        return resellers
+    data = _get_dump()
+    resellers = [item for item in data if item['model'] == 'fallballapp.reseller']
+    return resellers
