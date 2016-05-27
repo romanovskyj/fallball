@@ -54,7 +54,7 @@ class ResellerViewSet(ModelViewSet):
         return Response("All clients has been repaired", status=status.HTTP_200_OK)
 
     @list_route(methods=['get'])
-    def reset(self, request, *args, **kwargs):
+    def reset_all(self, request, *args, **kwargs):
         """
         Repair particular reseller
         """
@@ -135,7 +135,7 @@ class ClientViewSet(ModelViewSet):
         return Response("Client has been repaired", status=status.HTTP_200_OK)
 
     @list_route(methods=['get'])
-    def reset(self, request, *args, **kwargs):
+    def reset_all(self, request, *args, **kwargs):
         """
         Recreate all reseller clients to initial state
         """
