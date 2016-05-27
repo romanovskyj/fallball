@@ -58,9 +58,11 @@ def repair(model, pk):
         # Delete current data before reparing if the object exists
         model.objects.filter(pk=pk).delete()
 
+        # Prepere initial object for model creation
+        initial_obj = prepare_dict_for_model(initial_obj)
+
         # Repair reseller to initial state and itialize reseller clients reparing
         if model is Reseller:
-            initial_obj['fields']['owner_id'] = initial_obj['fields'].pop('owner')
             # Repair initial objects
             Reseller.objects.create(id=initial_obj['pk'],
                                     **initial_obj['fields'])
@@ -101,3 +103,17 @@ def get_all_resellers():
     data = _get_dump()
     resellers = [item for item in data if item['model'] == 'fallballapp.reseller']
     return resellers
+
+
+def prepare_dict_for_model(d):
+    """
+    Prepare some keys of dict to sent the dict for model creation
+    """
+    if 'owner' in d:
+        d['owner_id'] = d['fields'].pop('owner')
+    if 'reseller' in d:
+        d['reseller_id'] = d['fields'].pop('reseller')
+    if 'client' in d:
+        d['client_id'] = d['fields'].pop('client')
+
+    return d
