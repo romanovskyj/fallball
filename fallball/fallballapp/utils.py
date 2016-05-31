@@ -33,8 +33,13 @@ def _get_dump():
 
     with open(settings.DBDUMP_FILE, 'r') as f:
         dump = json.load(f)
+        data = []
 
-    return dump
+        # Correct dump to prepare it for model object creation
+        for item in dump:
+            data.append(prepare_dict_for_model(item))
+
+    return data
 
 
 def get_object_or_403(*args, **kwargs):
@@ -54,42 +59,40 @@ def repair(model, pk):
     data = _get_dump()
     initial_obj = [item for item in data if item['pk'] == pk][0]
     if initial_obj:
-
         # Delete current data before reparing if the object exists
         model.objects.filter(pk=pk).delete()
-
-        # Prepere initial object for model creation
-        initial_obj = prepare_dict_for_model(initial_obj)
 
         # Repair reseller to initial state and itialize reseller clients reparing
         if model is Reseller:
             # Repair initial objects
             Reseller.objects.create(id=initial_obj['pk'],
                                     **initial_obj['fields'])
+
+            # Delete all clients that exist for this reseller
+            Client.objects.filter(reseller_id=initial_obj['pk']).delete()
+
             initial_clients = ([item for item in data if item['model'] == 'fallballapp.client' and
-                                item['fields']['reseller'] == pk])
+                                item['fields']['reseller_id'] == pk])
             for initial_client in initial_clients:
                 repair(Client, initial_client['pk'])
 
         # Repair client to initial state and initialize clientusers reparing
         elif model is Client:
             Client.objects.create(id=initial_obj['pk'],
-                                  creation_date=initial_obj['fields']['creation_date'],
-                                  limit=initial_obj['fields']['limit'],
-                                  reseller_id=initial_obj['fields']['reseller'])
+                                  **initial_obj['fields'])
+
+            # Delete all users that exist for this client
+            ClientUser.objects.filter(client_id=initial_obj['pk']).delete()
+
             initial_client_users = ([item for item in data if item['model'] == 'fallballapp.clientuser' and
-                                     item['fields']['client'] == initial_obj['pk']])
+                                     item['fields']['client_id'] == initial_obj['pk']])
             for initial_client_user in initial_client_users:
                 repair(ClientUser, initial_client_user['pk'])
 
         # Repair client user
         elif model is ClientUser:
             ClientUser.objects.create(id=initial_obj['pk'],
-                                      password=initial_obj['fields']['password'],
-                                      usage=initial_obj['fields']['usage'],
-                                      admin=initial_obj['fields']['admin'],
-                                      limit=initial_obj['fields']['limit'],
-                                      client_id=initial_obj['fields']['client'])
+                                      **initial_obj['fields'])
 
         return True
 
@@ -105,15 +108,35 @@ def get_all_resellers():
     return resellers
 
 
-def prepare_dict_for_model(d):
+def get_all_reseller_clients(reseller_pk):
+    """
+    Get all resellers from fixture file
+    """
+    data = _get_dump()
+    clients = [item for item in data if item['model'] == 'fallballapp.client' and
+               item['fields']['reseller_id'] == reseller_pk]
+    return clients
+
+
+def prepare_dict_for_model(item):
     """
     Prepare some keys of dict to sent the dict for model creation
     """
-    if 'owner' in d:
-        d['owner_id'] = d['fields'].pop('owner')
-    if 'reseller' in d:
-        d['reseller_id'] = d['fields'].pop('reseller')
-    if 'client' in d:
-        d['client_id'] = d['fields'].pop('client')
+    if 'owner' in item['fields']:
+        item['fields']['owner_id'] = item['fields'].pop('owner')
+    if 'reseller' in item['fields']:
+        item['fields']['reseller_id'] = item['fields'].pop('reseller')
+    if 'client' in item['fields']:
+        item['fields']['client_id'] = item['fields'].pop('client')
 
-    return d
+    return item
+
+
+def dump_exits(pk):
+    """
+    Only objects that have dump can be repaired
+    """
+    data = _get_dump()
+    if [item for item in data if item['pk'] == pk]:
+        return True
+    return False

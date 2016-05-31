@@ -9,7 +9,8 @@ from rest_framework.viewsets import ModelViewSet
 from .models import Client, ClientUser, Reseller
 from .serializers import (ClientSerializer, ClientUserSerializer,
                           ResellerSerializer)
-from .utils import get_all_resellers, get_object_or_403, repair
+from .utils import (get_all_resellers, get_object_or_403, repair,
+                    get_all_reseller_clients, dump_exits)
 
 
 class ResellerViewSet(ModelViewSet):
@@ -46,12 +47,15 @@ class ResellerViewSet(ModelViewSet):
         Repair particular reseller
         """
         if request.user.is_superuser:
-            reseller = get_object_or_403(Reseller, pk=kwargs['pk'])
+            reseller = get_object_or_404(Reseller, pk=kwargs['pk'])
         else:
             reseller = get_object_or_403(Reseller, pk=kwargs['pk'], owner=request.user)
 
-        repair(Reseller, reseller.pk)
-        return Response("All clients has been repaired", status=status.HTTP_200_OK)
+        # Check if reseller exists in database
+        if dump_exits(reseller.pk):
+            repair(Reseller, reseller.pk)
+            return Response("All clients has been repaired", status=status.HTTP_200_OK)
+        return Response("This reseller cannot be repaired", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @list_route(methods=['get'])
     def reset_all(self, request, *args, **kwargs):
@@ -59,10 +63,15 @@ class ResellerViewSet(ModelViewSet):
         Repair particular reseller
         """
         if request.user.is_superuser:
+
+            # Delete all existed resellers prior to reparing:
+            Reseller.objects.all().delete()
+
+            # Get list of available resellers from dump and repair one by one
             resellers = get_all_resellers()
             for reseller in resellers:
                 repair(Reseller, reseller['pk'])
-                return Response("All resellers has been repaired", status=status.HTTP_200_OK)
+            return Response("All resellers has been repaired", status=status.HTTP_200_OK)
         return Response("Only superuser can repair all resellers", status=status.HTTP_403_FORBIDDEN)
 
 
@@ -130,8 +139,11 @@ class ClientViewSet(ModelViewSet):
             reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
 
         # Check that client belongs to particular reseller
-        get_object_or_403(Client, reseller=reseller, pk=kwargs['pk'])
-        repair(Client, kwargs['pk'])
+        get_object_or_404(Client, reseller=reseller, pk=kwargs['pk'])
+        try:
+            repair(Client, kwargs['pk'])
+        except:
+            return Response("This client cannot be repaired", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response("Client has been repaired", status=status.HTTP_200_OK)
 
     @list_route(methods=['get'])
@@ -144,8 +156,15 @@ class ClientViewSet(ModelViewSet):
         else:
             reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
 
-        repair(Client, reseller.pk)
-        return Response("All clients has been repaired", status=status.HTTP_200_OK)
+        clients = get_all_reseller_clients(kwargs['reseller_pk'])
+        if clients is None:
+           return Response("There are no clients to repair", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            # Delete all reseller clients
+            Client.objects.filter(reseller=reseller).delete()
+            for client in clients:
+                repair(Client, client['pk'])
+            return Response("All clients has been repaired", status=status.HTTP_200_OK)
 
 
 class ClientUserViewSet(ModelViewSet):
