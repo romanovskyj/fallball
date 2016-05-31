@@ -9,8 +9,8 @@ from rest_framework.viewsets import ModelViewSet
 from .models import Client, ClientUser, Reseller
 from .serializers import (ClientSerializer, ClientUserSerializer,
                           ResellerSerializer)
-from .utils import (get_all_resellers, get_object_or_403, repair,
-                    get_all_reseller_clients, dump_exits)
+from .utils import (dump_exits, get_all_reseller_clients, get_all_resellers,
+                    get_object_or_403, repair)
 
 
 class ResellerViewSet(ModelViewSet):
@@ -158,7 +158,7 @@ class ClientViewSet(ModelViewSet):
 
         clients = get_all_reseller_clients(kwargs['reseller_pk'])
         if clients is None:
-           return Response("There are no clients to repair", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response("There are no clients to repair", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             # Delete all reseller clients
             Client.objects.filter(reseller=reseller).delete()

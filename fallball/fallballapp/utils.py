@@ -1,5 +1,4 @@
 import json
-import os
 
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.http import Http404
