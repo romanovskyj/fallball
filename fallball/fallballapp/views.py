@@ -6,10 +6,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from .models import Client, ClientUser, Reseller
-from .serializers import (ClientSerializer, ClientUserSerializer,
+from fallballapp.models import Client, ClientUser, Reseller
+from fallballapp.serializers import (ClientSerializer, ClientUserSerializer,
                           ResellerSerializer)
-from .utils import (dump_exits, get_all_reseller_clients, get_all_resellers,
+from fallballapp.utils import (dump_exits, get_all_reseller_clients, get_all_resellers,
                     get_object_or_403, repair)
 
 
@@ -159,12 +159,12 @@ class ClientViewSet(ModelViewSet):
         clients = get_all_reseller_clients(kwargs['reseller_pk'])
         if clients is None:
             return Response("There are no clients to repair", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        else:
-            # Delete all reseller clients
-            Client.objects.filter(reseller=reseller).delete()
-            for client in clients:
-                repair(Client, client['pk'])
-            return Response("All clients has been repaired", status=status.HTTP_200_OK)
+
+        # Delete all reseller clients
+        Client.objects.filter(reseller=reseller).delete()
+        for client in clients:
+            repair(Client, client['pk'])
+        return Response("All clients has been repaired", status=status.HTTP_200_OK)
 
 
 class ClientUserViewSet(ModelViewSet):

@@ -5,8 +5,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 
 import fallball.settings as settings
-
-from .models import Client, ClientUser, Reseller
+from fallballapp.models import Client, ClientUser, Reseller
 
 
 def singleton(f):
@@ -121,12 +120,9 @@ def prepare_dict_for_model(item):
     """
     Prepare some keys of dict to sent the dict for model creation
     """
-    if 'owner' in item['fields']:
-        item['fields']['owner_id'] = item['fields'].pop('owner')
-    if 'reseller' in item['fields']:
-        item['fields']['reseller_id'] = item['fields'].pop('reseller')
-    if 'client' in item['fields']:
-        item['fields']['client_id'] = item['fields'].pop('client')
+    for field in ['owner', 'reseller', 'client']:
+        if field in item['fields']:
+            item['fields']['{}_id'.format(field)] = item['fields'].pop(field)
 
     return item
 
