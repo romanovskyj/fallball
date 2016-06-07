@@ -36,3 +36,10 @@ In order to run server you need to execute the following command from the root f
 ```
 python manage.py runserver <host_name>:<port>
 ```
+
+## Tests
+To run tests simply execute the following command:
+
+```
+python manage.py test fallballapp.tests
+```

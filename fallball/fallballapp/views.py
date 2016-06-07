@@ -1,15 +1,16 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import detail_route, list_route
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from .models import Client, ClientUser, Reseller
-from .serializers import (ClientSerializer, ClientUserSerializer,
-                          ResellerSerializer)
-from .utils import get_object_or_403
+from fallballapp.models import Client, ClientUser, Reseller
+from fallballapp.serializers import (ClientSerializer, ClientUserSerializer,
+                                     ResellerSerializer)
+from fallballapp.utils import (dump_exits, get_all_reseller_clients,
+                               get_all_resellers, get_object_or_403, repair)
 
 
 class ResellerViewSet(ModelViewSet):
@@ -39,6 +40,39 @@ class ResellerViewSet(ModelViewSet):
         if request.user.is_superuser:
             return ModelViewSet.retrieve(self, request, *args, **kwargs)
         return Response("Only superuser can get reseller information", status=status.HTTP_403_FORBIDDEN)
+
+    @detail_route(methods=['get'])
+    def reset(self, request, *args, **kwargs):
+        """
+        Repair particular reseller
+        """
+        if request.user.is_superuser:
+            reseller = get_object_or_404(Reseller, pk=kwargs['pk'])
+        else:
+            reseller = get_object_or_403(Reseller, pk=kwargs['pk'], owner=request.user)
+
+        # Check if reseller exists in database
+        if dump_exits(reseller.pk):
+            repair(Reseller, reseller.pk)
+            return Response("All clients has been repaired", status=status.HTTP_200_OK)
+        return Response("This reseller cannot be repaired", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @list_route(methods=['get'])
+    def reset_all(self, request, *args, **kwargs):
+        """
+        Repair particular reseller
+        """
+        if request.user.is_superuser:
+
+            # Delete all existed resellers prior to reparing:
+            Reseller.objects.all().delete()
+
+            # Get list of available resellers from dump and repair one by one
+            resellers = get_all_resellers()
+            for reseller in resellers:
+                repair(Reseller, reseller['pk'])
+            return Response("All resellers has been repaired", status=status.HTTP_200_OK)
+        return Response("Only superuser can repair all resellers", status=status.HTTP_403_FORBIDDEN)
 
 
 class ClientViewSet(ModelViewSet):
@@ -100,10 +134,37 @@ class ClientViewSet(ModelViewSet):
         Recreate client to initial state
         """
         if request.user.is_superuser:
-            get_object_or_403(Reseller, pk=kwargs['reseller_pk'])
+            reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'])
         else:
-            get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
-        # reset will be implemented here
+            reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
+
+        # Check that client belongs to particular reseller
+        get_object_or_404(Client, reseller=reseller, pk=kwargs['pk'])
+        try:
+            repair(Client, kwargs['pk'])
+        except:
+            return Response("This client cannot be repaired", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response("Client has been repaired", status=status.HTTP_200_OK)
+
+    @list_route(methods=['get'])
+    def reset_all(self, request, *args, **kwargs):
+        """
+        Recreate all reseller clients to initial state
+        """
+        if request.user.is_superuser:
+            reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'])
+        else:
+            reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
+
+        clients = get_all_reseller_clients(kwargs['reseller_pk'])
+        if not clients:
+            return Response("There are no clients to repair", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        # Delete all reseller clients
+        Client.objects.filter(reseller=reseller).delete()
+        for client in clients:
+            repair(Client, client['pk'])
+        return Response("All clients has been repaired", status=status.HTTP_200_OK)
 
 
 class ClientUserViewSet(ModelViewSet):

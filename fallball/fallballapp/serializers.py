@@ -5,7 +5,7 @@ from rest_framework import serializers as rest_serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import ValidationError
 
-from .models import Client, ClientUser, Reseller
+from fallballapp.models import Client, ClientUser, Reseller
 
 
 class StorageResellerSerializer(rest_serializers.HyperlinkedModelSerializer):

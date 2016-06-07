@@ -108,3 +108,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'fallballapp.pagination.PageNumberPaginationDataOnly',
     'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.NamespaceVersioning',
 }
+
+
+DBDUMP_FILE = os.path.join(BASE_DIR, 'fallballapp/fixtures/dbdump.json')
