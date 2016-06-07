@@ -8,9 +8,9 @@ from rest_framework.viewsets import ModelViewSet
 
 from fallballapp.models import Client, ClientUser, Reseller
 from fallballapp.serializers import (ClientSerializer, ClientUserSerializer,
-                          ResellerSerializer)
-from fallballapp.utils import (dump_exits, get_all_reseller_clients, get_all_resellers,
-                    get_object_or_403, repair)
+                                     ResellerSerializer)
+from fallballapp.utils import (dump_exits, get_all_reseller_clients,
+                               get_all_resellers, get_object_or_403, repair)
 
 
 class ResellerViewSet(ModelViewSet):
