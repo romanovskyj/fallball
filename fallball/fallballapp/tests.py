@@ -61,15 +61,11 @@ class ResetTestCase(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        pass
+        cls.client_request = _get_client()
 
     def setUp(self):
         # reload initial data
-        import pdb
-        pdb.set_trace()
-        call_command('flush',interactive=False)
         call_command('loaddata','dbdump')
-        self.client_request = _get_client()
 
     def test_reset_all_resellers(self):
         # delete reseller that should be available initially
