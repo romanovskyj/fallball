@@ -157,7 +157,7 @@ class ClientViewSet(ModelViewSet):
             reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
 
         clients = get_all_reseller_clients(kwargs['reseller_pk'])
-        if clients is None:
+        if not clients:
             return Response("There are no clients to repair", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         # Delete all reseller clients

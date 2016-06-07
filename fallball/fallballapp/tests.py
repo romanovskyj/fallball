@@ -26,7 +26,7 @@ class BaseTestCase(TestCase):
     """
     Test basic operations: model objects create/delete
     """
-    
+
     # Check that resellers, clients, objects can be created and deleted
     @classmethod
     def setUpTestData(cls):
