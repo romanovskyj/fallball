@@ -7,7 +7,9 @@ python:
   - '3.4'
 install:
   - pip install -r requirements.txt
-script: python setup.py flake8
+script:
+  - python setup.py flake8
+  - python fallball/manage.py test fallballapp.tests
 deploy:
   provider: pypi
   user: eromanovskyj
