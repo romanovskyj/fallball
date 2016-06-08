@@ -1,0 +1,17 @@
+language: python
+branches:
+  only:
+    - master
+python:
+  - '2.7'
+  - '3.4'
+install:
+  - pip install -r requirements.txt
+script: python setup.py flake8
+deploy:
+  provider: pypi
+  user: eromanovskyj
+  password:
+    secure: "vnOTz9BFZ3wVhELuFwbGBixFlculgNOr8JLgWikDI1eQuoLB5VSJAGgiteSmLBM3HRd1n385gaWC2DQI51C9FgF2TxEbzFHE2ZNGurmN77GvjV4HGO/HgWbvn6SkCl91YdHSAtXYuz4l162VL122zGesmetz/F4RJe9pv6PcuJTxg32IrhPAr1Jn55LTkOYgkQVIQaeFr5ZGmRdvYou/Lb/dxOlMtXbFsf1pLy+6QDxDzc5N8XCoStUZjFZugOtCAM2/xuW5LUEdJtgZZMjHwEFoHqyiS+rzX7U0RXDigdisdrVWtn8L0O+wRbRjhE8cF5iOeW8XzfcCP1zd2Qn3Gg2sXVAqccgmvK1+1A9HWOab5RjFa1kMpvAiV8JAGM+e/v4RiJM1Wmnh2FpdpmKxk1zJ0oBrkM+lGwWgd45BKEYfGX6CMZ9KS0ra2NnlsWjVkBZ4IM1C+0F7zOxVEOCbvi649wsBBm6n6KpjkeiOg27StS2ZVD3i205+d0GWQIRsxRr02ti2dlgKKTsTKdVnUdB2KR/qBgXfwIv675kvAh+TVICRnrGWmYoOO1ZDqxYF2xGhPH8AHrwY9fH+tZNyuhuX/QZynzRexsT8fOqSATd9ok3HVsj7vZTv7asfDeHS1MqRFzijvCPFtOX++5Jb/RyM9zfqCx2MHnuDvMFRW4g="
+  on:
+    distributions: sdist bdist_wheel
