@@ -31,7 +31,7 @@
   "pk": "johnson@sunnyflowers.tld",
   "fields": {
     "user": 5,
-    "password": "123qwe",
+    "password": "123qwe123",
     "usage": 1,
     "admin": false,
     "limit": 10,
@@ -408,7 +408,7 @@
   "model": "auth.user",
   "pk": 5,
   "fields": {
-    "password": "123qwe",
+    "password": "pbkdf2_sha256$24000$lXUlpW00QbeV$wS3cP8zGlMaUIIXg96f4plyfoGiGQbvpDkTAqiJY+mM=",
     "last_login": null,
     "is_superuser": false,
     "username": "johnson@sunnyflowers.tld",
@@ -426,7 +426,7 @@
   "model": "auth.user",
   "pk": 6,
   "fields": {
-    "password": "1q2w3e",
+    "password": "pbkdf2_sha256$24000$lXUlpW00QbeV$wS3cP8zGlMaUIIXg96f4plyfoGiGQbvpDkTAqiJY+mM=",
     "last_login": null,
     "is_superuser": false,
     "username": "brown@sunnyflowers.tld",
@@ -444,7 +444,7 @@
   "model": "auth.user",
   "pk": 7,
   "fields": {
-    "password": "1q2w3e",
+    "password": "pbkdf2_sha256$24000$lXUlpW00QbeV$wS3cP8zGlMaUIIXg96f4plyfoGiGQbvpDkTAqiJY+mM=",
     "last_login": null,
     "is_superuser": false,
     "username": "williams@sunnyflowers.tld",
@@ -463,7 +463,7 @@
   "pk": "brown@sunnyflowers.tld",
   "fields": {
     "user": 6,
-    "password": "1q2w3e",
+    "password": "123qwe123",
     "usage": 9,
     "admin": false,
     "limit": 15,
@@ -475,7 +475,7 @@
   "pk": "williams@sunnyflowers.tld",
   "fields": {
     "user": 7,
-    "password": "1q2w3e",
+    "password": "123qwe123",
     "usage": 9,
     "admin": false,
     "limit": 15,

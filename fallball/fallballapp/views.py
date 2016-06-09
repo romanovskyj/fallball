@@ -220,5 +220,8 @@ class UsersViewSet(ModelViewSet):
     queryset = User.objects.all()
 
     def list(self, request, *args, **kwargs):
-        queryset = ClientUser.objects.filter()
-        return Response('ok', status=status.HTTP_200_OK)
+        import pdb
+        pdb.set_trace()
+        queryset = ClientUser.objects.filter(user_id=request.user.id).first()
+        serializer = ClientUserSerializer(queryset)
+        return Response(serializer.data)
