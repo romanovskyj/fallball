@@ -100,9 +100,18 @@ class ClientUserSerializer(rest_serializers.ModelSerializer):
     def create(self, validated_data):
         # Usage is random but not more than limit
         usage = randint(0, validated_data['limit'])
-        return ClientUser.objects.create(usage=usage, **validated_data)
+
+        if User.objects.filter(username=validated_data['id']).exists():
+            raise ValidationError('users with such id is already created')
+        user = User.objects.create(username=validated_data['id'],password=validated_data['password'])
+
+        return ClientUser.objects.create(usage=usage, user=user, **validated_data)
 
     def get_role(self, obj):
         if obj.admin:
             return "admin"
         return "user"
+
+
+class UserSerializer(rest_serializers.ModelSerializer):
+    pass

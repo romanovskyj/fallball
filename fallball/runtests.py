@@ -1,11 +1,12 @@
 #!/usr/bin/env python
-from imp import reload
 import os
 import sys
+from imp import reload
 
 import django
 from django.conf import settings
 from django.test.utils import get_runner
+
 import fallball
 
 # As parent directory has also 'fallball' name it needs to specify the package explicitly:

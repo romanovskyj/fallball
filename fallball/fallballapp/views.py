@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import detail_route, list_route
@@ -213,3 +214,11 @@ class ClientUserViewSet(ModelViewSet):
             get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
 
         return ModelViewSet.retrieve(self, request, *args, **kwargs)
+
+
+class UsersViewSet(ModelViewSet):
+    queryset = User.objects.all()
+
+    def list(self, request, *args, **kwargs):
+        queryset = ClientUser.objects.filter()
+        return Response('ok', status=status.HTTP_200_OK)
