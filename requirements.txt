@@ -1,5 +1,4 @@
 # The base set of requirements is just Django
-# The project is run by Python 3 version
 
 django==1.9.5
 djangorestframework==3.3.3

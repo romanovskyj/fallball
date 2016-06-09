@@ -16,13 +16,13 @@ def version():
         data = verfile.readlines()
         return data[0].strip()
 
-
 setup(
     name='fallball',
     version=version(),
     author='romanovskyj',
     author_email='eromanovskyj@odin.com',
     packages=['fallball'],
+    test_suite="fallball.runtests",
     url='http://fallball.io',
     license='Apache License',
     description='Dummy file sharing service available by REST api.',

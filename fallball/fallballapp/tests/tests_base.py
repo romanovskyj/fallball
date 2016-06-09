@@ -5,6 +5,7 @@ from django.test import TestCase
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient
 
+
 from fallballapp.models import Client, ClientUser, Reseller
 
 
