@@ -220,8 +220,6 @@ class UsersViewSet(ModelViewSet):
     queryset = User.objects.all()
 
     def list(self, request, *args, **kwargs):
-        import pdb
-        pdb.set_trace()
         queryset = ClientUser.objects.filter(user_id=request.user.id).first()
         serializer = ClientUserSerializer(queryset)
         return Response(serializer.data)
