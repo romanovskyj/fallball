@@ -221,11 +221,5 @@ class UsersViewSet(ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         queryset = ClientUser.objects.filter(user_id=request.user.id).first()
-        if queryset is None:
-            return Response('Invalid credentials', status=status.HTTP_403_FORBIDDEN)
-        else:
-            serializer = ClientUserSerializer(queryset)
-            response = Response()
-            response['Access-Control-Allow-Origin'] = '*'
-            response.data = serializer.data
-            return response
+        serializer = ClientUserSerializer(queryset)
+        return Response(serializer.data)
