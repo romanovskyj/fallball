@@ -102,3 +102,6 @@ fallball/db.sqlite3
 
 # Inteliji idea
 .idea
+
+# travis
+version.txt
