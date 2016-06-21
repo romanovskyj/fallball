@@ -101,9 +101,7 @@ class ClientUserSerializer(rest_serializers.ModelSerializer):
         # Usage is random but not more than limit
         usage = randint(0, validated_data['limit'])
 
-        if User.objects.filter(username=validated_data['id']).exists():
-            raise ValidationError('users with such id is already created')
-        user = User.objects.create(username=validated_data['id'],password=validated_data['password'])
+        user = User.objects.create(username=validated_data['id'], password=validated_data['password'])
 
         return ClientUser.objects.create(usage=usage, user=user, **validated_data)
 

@@ -1,7 +1,8 @@
 from django.conf.urls import include, url
 from rest_framework_nested import routers
 
-from .views import ClientUserViewSet, ClientViewSet, ResellerViewSet, UsersViewSet
+from .views import (ClientUserViewSet, ClientViewSet, ResellerViewSet,
+                    UsersViewSet)
 
 router = routers.SimpleRouter()
 router.register(r'resellers', ResellerViewSet)
