@@ -31,6 +31,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.EmailField(max_length=254, primary_key=True, serialize=False)),
                 ('password', models.CharField(max_length=12)),
+                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
                 ('usage', models.IntegerField(blank=True)),
                 ('admin', models.BooleanField(default=False)),
                 ('limit', models.IntegerField()),

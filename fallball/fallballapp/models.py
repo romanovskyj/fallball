@@ -58,6 +58,7 @@ class Client(models.Model):
 class ClientUser(models.Model):
     # email field contains user email and used as user id
     id = models.EmailField(primary_key=True)
+    user = models.OneToOneField(User)
     password = models.CharField(max_length=12)
     usage = models.IntegerField(blank=True)
     admin = models.BooleanField(default=False)

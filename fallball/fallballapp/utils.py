@@ -120,7 +120,7 @@ def prepare_dict_for_model(item):
     """
     Prepare some keys of dict to sent the dict for model creation
     """
-    for field in ['owner', 'reseller', 'client']:
+    for field in ['owner', 'reseller', 'client', 'user']:
         if field in item['fields']:
             item['fields']['{}_id'.format(field)] = item['fields'].pop(field)
 

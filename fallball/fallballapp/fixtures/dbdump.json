@@ -28,34 +28,13 @@
 },
 {
   "model": "fallballapp.clientuser",
-  "pk": "brown@sunnyflowers.tld",
-  "fields": {
-    "password": "1q2w3e",
-    "usage": 9,
-    "admin": false,
-    "limit": 15,
-    "client": "SunnyFlowers"
-  }
-},
-{
-  "model": "fallballapp.clientuser",
   "pk": "johnson@sunnyflowers.tld",
   "fields": {
-    "password": "123qwe",
+    "user": 5,
+    "password": "123qwe123",
     "usage": 1,
     "admin": false,
     "limit": 10,
-    "client": "SunnyFlowers"
-  }
-},
-{
-  "model": "fallballapp.clientuser",
-  "pk": "williams@sunnyflowers.tld",
-  "fields": {
-    "password": "1q2w3e",
-    "usage": 9,
-    "admin": false,
-    "limit": 15,
     "client": "SunnyFlowers"
   }
 },
@@ -423,6 +402,84 @@
   "fields": {
     "limit": 800,
     "owner": 4
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 5,
+  "fields": {
+    "password": "pbkdf2_sha256$24000$lXUlpW00QbeV$wS3cP8zGlMaUIIXg96f4plyfoGiGQbvpDkTAqiJY+mM=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "johnson@sunnyflowers.tld",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2016-05-16T09:41:31.131Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 6,
+  "fields": {
+    "password": "pbkdf2_sha256$24000$lXUlpW00QbeV$wS3cP8zGlMaUIIXg96f4plyfoGiGQbvpDkTAqiJY+mM=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "brown@sunnyflowers.tld",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2016-05-16T09:41:31.131Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 7,
+  "fields": {
+    "password": "pbkdf2_sha256$24000$lXUlpW00QbeV$wS3cP8zGlMaUIIXg96f4plyfoGiGQbvpDkTAqiJY+mM=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "williams@sunnyflowers.tld",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2016-05-16T09:41:31.131Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "fallballapp.clientuser",
+  "pk": "brown@sunnyflowers.tld",
+  "fields": {
+    "user": 6,
+    "password": "123qwe123",
+    "usage": 9,
+    "admin": false,
+    "limit": 15,
+    "client": "SunnyFlowers"
+  }
+},
+{
+  "model": "fallballapp.clientuser",
+  "pk": "williams@sunnyflowers.tld",
+  "fields": {
+    "user": 7,
+    "password": "123qwe123",
+    "usage": 9,
+    "admin": false,
+    "limit": 15,
+    "client": "SunnyFlowers"
   }
 }
 ]
