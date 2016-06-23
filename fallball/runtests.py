@@ -9,6 +9,7 @@ from django.test.utils import get_runner
 
 import fallball
 
+
 # As parent directory has also 'fallball' name it needs to specify the package explicitly:
 if __name__ is not '__main__':
     current_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
