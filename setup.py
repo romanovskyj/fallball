@@ -2,6 +2,7 @@ import os
 
 from setuptools import setup, find_packages
 
+
 PACKAGE_VERSION = '0.1'
 
 
