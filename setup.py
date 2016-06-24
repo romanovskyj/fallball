@@ -1,6 +1,6 @@
 import os
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 PACKAGE_VERSION = '0.1'
 
@@ -21,7 +21,8 @@ setup(
     version=version(),
     author='romanovskyj',
     author_email='eromanovskyj@odin.com',
-    packages=['fallball'],
+    packages=find_packages('fallball'),
+    package_dir={'': 'fallball'},
     test_suite="fallball.runtests",
     url='http://fallball.io',
     license='Apache License',
