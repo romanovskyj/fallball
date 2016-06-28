@@ -196,6 +196,15 @@ class ClientUserViewSet(ModelViewSet):
             return Response('Client limit is reached', status=status.HTTP_400_BAD_REQUEST)
         return Response('Current reseller does not have permissions for this client', status=status.HTTP_403_FORBIDDEN)
 
+    def destroy(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            get_object_or_403(Reseller, pk=kwargs['reseller_pk'])
+        else:
+            get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
+        User.objects.filter(id=request.user.id).delete()
+
+        ModelViewSet.destroy(self, request, *args, **kwargs)
+
     def list(self, request, **kwargs):
         if request.user.is_superuser:
             reseller = get_object_or_403(Reseller, pk=kwargs['reseller_pk'])
