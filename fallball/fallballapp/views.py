@@ -1,5 +1,5 @@
-from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import detail_route, list_route
@@ -28,6 +28,13 @@ class ResellerViewSet(ModelViewSet):
         if request.user.is_superuser:
             return ModelViewSet.create(self, request, *args, **kwargs)
         return Response("Only superuser can create reseller", status=status.HTTP_403_FORBIDDEN)
+
+    def destroy(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            Reseller.objects.filter(id=kwargs['pk']).delete()
+            User.objects.filter(username=kwargs['pk']).delete()
+            return Response('Reseller has been deleted', status=status.HTTP_204_NO_CONTENT)
+        return Response("Only superuser can delete reseller", status=status.HTTP_403_FORBIDDEN)
 
     def list(self, request, *args, **kwargs):
         """
@@ -195,6 +202,16 @@ class ClientUserViewSet(ModelViewSet):
                 return ModelViewSet.create(self, request, *args, **kwargs)
             return Response('Client limit is reached', status=status.HTTP_400_BAD_REQUEST)
         return Response('Current reseller does not have permissions for this client', status=status.HTTP_403_FORBIDDEN)
+
+    def destroy(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            get_object_or_403(Reseller, pk=kwargs['reseller_pk'])
+        else:
+            get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
+
+        ClientUser.objects.filter(id=kwargs['pk']).delete()
+        User.objects.filter(username=kwargs['pk']).delete()
+        return Response('User has been deleted', status=status.HTTP_204_NO_CONTENT)
 
     def list(self, request, **kwargs):
         if request.user.is_superuser:
