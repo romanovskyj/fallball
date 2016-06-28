@@ -29,6 +29,13 @@ class ResellerViewSet(ModelViewSet):
             return ModelViewSet.create(self, request, *args, **kwargs)
         return Response("Only superuser can create reseller", status=status.HTTP_403_FORBIDDEN)
 
+    def destroy(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            Reseller.objects.filter(id=kwargs['pk']).delete()
+            User.objects.filter(username=kwargs['pk']).delete()
+            return Response('Reseller has been deleted', status=status.HTTP_204_NO_CONTENT)
+        return Response("Only superuser can delete reseller", status=status.HTTP_403_FORBIDDEN)
+
     def list(self, request, *args, **kwargs):
         """
         Method is overwritten in order to implement superuser check
@@ -201,9 +208,10 @@ class ClientUserViewSet(ModelViewSet):
             get_object_or_403(Reseller, pk=kwargs['reseller_pk'])
         else:
             get_object_or_403(Reseller, pk=kwargs['reseller_pk'], owner=request.user)
-        User.objects.filter(id=request.user.id).delete()
 
-        ModelViewSet.destroy(self, request, *args, **kwargs)
+        ClientUser.objects.filter(id=kwargs['pk']).delete()
+        User.objects.filter(username=kwargs['pk']).delete()
+        return Response('User has been deleted', status=status.HTTP_204_NO_CONTENT)
 
     def list(self, request, **kwargs):
         if request.user.is_superuser:

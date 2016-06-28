@@ -52,6 +52,15 @@ class BaseTestCase(TestCase):
         self.assertTrue(Client.objects.filter(id='test_client'))
         self.assertTrue(ClientUser.objects.filter(id='test_user@test.tld'))
 
+    def test_object_recreation(self):
+        self.client_request.post('/v1/resellers/',
+                                 '{"id":"RecreationReseller", "storage":{"limit": 200}}',
+                                 content_type='application/json')
+        self.client_request.delete('/v1/resellers/RecreationReseller', content_type='application/json')
+        self.client_request.post('/v1/resellers/',
+                                 '{"id":"RecreationReseller", "storage":{"limit": 200}}',
+                                 content_type='application/json')
+
 
 class ResetTestCase(TestCase):
     """
